@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Single Slope ADC Simulator with RC Design</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* Disable text selection and pointer events */
+        * {
+            user-select: none !important;
+            cursor: default !important;
+        }
+
+        /* Disable context menu */
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            
+        }
+
+        /* Re-enable pointer events only for specific interactive elements */
+        button,
+        input,
+        .form-range,
+        .circuit-dot,
+        .circuit-btn,
+        .circuit-controls,
+        .circuit-controls *,
+        #calculateBtn,
+        #startBtn,
+        #resetBtn,
+        #circuitCheckBtn,
+        #circuitAutoConnectBtn,
+        #circuitClearBtn,
+        #circuitShowRequiredBtn,
+        #voltageSlider,
+        #bits,
+        #clockFreq,
+        #vref,
+        #capacitance,
+        #opampSupply {
+            pointer-events: auto !important;
+            cursor: pointer !important;
+        }
+
+        /* Re-enable for canvas */
+        canvas {
+            pointer-events: auto !important;
+        }
+
+        /* Force fixed layout */
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 20px;
+            padding-bottom: 40px;
+            overflow-x: auto;
+            min-width: 1400px;
+        }
+
+        .container {
+            width: 1400px;
+            margin: 0 auto;
+            min-width: 1400px;
+        }
+
+        /* Fixed layout - no responsiveness */
+        .iframecontainer {
+            display: flex;
+            gap: 20px;
+            margin-bottom: -35px;
+            height: 690px;
+            width: 100%;
+            min-width: 1400px;
+            flex-shrink: 0;
+        }
+        .circuit-simulator-container {
+            width: 980px;
+            height: 720px;
+            border: none;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            background: #cfcfcf;
+            flex-shrink: 0;
+        }
+
+        .card.sidebar-card {
+    width: 400px;
+    flex-shrink: 0;
+    height: 720px;
+    overflow-y: auto;   /* ENABLE SCROLL */
+    overflow-x: hidden;
+}
+
+        /* Make all other elements fixed size */
+        .card {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border: none;
+            width: 100%;
+            min-width: 100%;
+        }
+
+        .card-header {
+            background-color: #0d6efd;
+            color: white;
+            font-weight: 600;
+            margin: 15px;
+        }
+
+        .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .btn-success {
+            background-color: #198754;
+            border-color: #198754;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: #212529;
+        }
+
+        .form-range::-webkit-slider-thumb {
+            background-color: #0d6efd;
+        }
+
+        .form-range::-moz-range-thumb {
+            background-color: #0d6efd;
+        }
+
+        .output-value {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .status-ready {
+            color: #6c757d;
+        }
+
+        .status-converting {
+            color: #ffc107;
+        }
+
+        .status-complete {
+            color: #198754;
+        }
+        .instrucButton{
+            background-color: transparent;color: white;border: none;
+        }
+        .instrucButton:hover{
+            background-color: rgba(255,255,255,0.2);
+        }
+        #adcCanvas {
+            width: 100%;
+            height: 400px;
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            min-width: 100%;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-right: 15px;
+        }
+        .sidebar-wide {
+            width: 375px !important;
+            min-width: 375px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 3px;
+            margin-right: 5px;
+        }
+        .legend-input {
+            background-color: #198754;
+        }
+        .legend-ramp {
+            background-color: #0d6efd;
+        }
+        .param-value {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .header-section {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            padding:10px 0px 0px 0px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            min-width: 100%;
+        }
+        .connection-status {
+            background-color: #f8f9fa;
+            border-left: 4px solid #6c757d;
+            padding: 10px;
+            margin-top: -15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            min-width: 100%;
+        }
+        .connection-status.connected {
+            border-left-color: #198754;
+            background-color: #d4edda;
+        }
+        .connection-status.disconnected {
+            border-left-color: #dc3545;
+            background-color: #f8d7da;
+        }
+        .conversion-card,
+        .digital-output-card {
+            width: 100%;
+            margin-top: 20px;
+            min-width: 100%;
+        }
+
+        .conversion-card .card-body {
+            padding: 15px;
+        }
+
+        .digital-output-card .card-body {
+            padding: 15px;
+        }
+
+        #rcResults {
+            min-width: 100%;
+            margin-bottom: 5px !important;
+        }
+
+        #visualizationSection {
+            min-width: 100%;
+            margin-top: 5px !important;
+        }
+        
+        /* Reduced gap between sections */
+        .conversion-card {
+            margin-top: 5px !important;
+        }
+
+        /* Floating Instructions Panel */
+        .floating-instructions {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 700px;
+            height: 700px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            overflow: hidden;
+            display: none;
+            pointer-events: auto;
+        }
+
+        .floating-instructions-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .floating-instructions-body {
+            padding: 20px;
+            height: calc(700px - 60px);
+            overflow-y: auto;
+            font-size: 14px;
+        }
+
+        .close-instructions {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+
+        .close-instructions:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .instructions-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+            pointer-events: auto;
+        }
+
+        /* Circuit Simulator Styles */
+        .circuit-container * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .circuit-container {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #cfcfcf;
+            font-family: Arial, sans-serif;
+            position: relative;
+        }
+
+        .circuit-parent {
+            width: 980px !important;
+            height: 600px !important;
+            padding: 30px 50px !important;
+            margin: 20px auto !important;
+            display: grid !important;
+            grid-template-columns: repeat(12, 1fr) !important;
+            grid-template-rows: repeat(8, 70px) !important;
+            gap: 8px !important;
+            position: relative !important;
+            background-color: #e6e6e6 !important;
+            background-image:
+                linear-gradient(to right, #d0d0d0 1px, transparent 1px),
+                linear-gradient(to bottom, #d0d0d0 1px, transparent 1px) !important;
+            background-size: 20px 20px !important;
+            border: 1px solid #9a9a9a !important;
+            transform-origin: 0 0 !important;
+            transform: scale(1) !important;
+            min-width: 980px;
+        }
+
+        .circuit-block {
+            position: relative;
+            background: #e6e6e6;
+            border: 1px solid #7f7f7f;
+            border-radius: 6px;
+            padding-left: 15px;
+            padding-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+        }
+
+        .circuit-block img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 4px;
+            mix-blend-mode: multiply;
+        }
+
+        .circuit-dot {
+            width: 12px;
+            height: 12px;
+            background: red;
+            border-radius: 50%;
+            position: absolute;
+            z-index: 10;
+            cursor: crosshair;
+            transition: background 0.2s;
+        }
+
+        .circuit-dot:hover {
+            background: #444;
+        }
+
+        .circuit-dot.active {
+            background: blue;
+            box-shadow: 0 0 10px blue;
+        }
+
+        .circuit-dot.connected {
+            background: green;
+        }
+
+        .circuit-controls {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            background: #e9ecef;
+            border-radius: 8px;
+            margin: -12px 20px 0px 20px;
+            width: calc(100% - 40px);
+        }
+
+        .circuit-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            min-width: 180px;
+        }
+        
+        /* Timing control styles */
+        .timing-control-group {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .timing-slider-container {
+            margin-top: 10px;
+        }
+        
+        .timing-label {
+            font-weight: 600;
+            color: #0d6efd;
+            margin-bottom: 5px;
+        }
+        
+        .timing-value-display {
+            background: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 5px;
+        }
+        
+        /* Warning styles for voltage limits */
+        .voltage-warning {
+            color: #dc3545;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+        
+        .voltage-safe {
+            color: #198754;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body oncontextmenu="return false;">
+    <div class="container">
+        <!-- Header -->
+        <div class="header-section">
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>Single Slope ADC Simulator</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="iframecontainer">
+            <!-- Circuit Simulator (Inline) -->
+            <div class="circuit-simulator-container">
+                <div id="circuitRequiredConnections"
+                    style="display: none; background: #e7f3fe; border-left: 4px solid #2196F3; padding: 12px; margin: 12px 20px; border-radius: 5px;">
+                    <h4><i class="fas fa-check-double"></i> Required Connections (11 connections)</h4>
+                    <ul>
+                        <li><span
+                                style="display: inline-block; background: #2196F3; color: white; padding: 1px 6px; border-radius: 3px; font-family: monospace; margin: 0 3px; font-size: 13px;">1-6</span>
+                            VIN to Comparator Non-Inverting Input</li>
+                        <li><span
+                                style="display: inline-block; background: #2196F3; color: white; padding: 1px 6px; border-radius: 3px; font-family: monospace; margin: 0 3px; font-size: 13px;">5-10</span>
+                            Comparator Inverting Input to Integrator Output</li>
+                        <li><span
+                                style="display: inline-block; background: #2196F3; color: white; padding: 1px 6px; border-radius: 3px; font-family: monospace; margin: 0 3px; font-size: 13px;">7-13</span>
+                            Comparator Output to Counter Reset</li>
+                        <li><span
+                                style="display: inline-block; background: #2196F3; color: white; padding: 1px 6px; border-radius: 3px; font-family: monospace; margin: 0 3px; font-size: 13px;">11-12</span>
+                            Clock to Counter Clock Input</li>
+                        <li><span
+                                style="display: inline-block; background: #2196F3; color: white; padding: 1px 6px; border-radius: 3px; font-family: monospace; margin: 0 3px; font-size: 13px;">13-41</span>
+                            Counter Reset to Buffer Control</li>
+                        <li><span
+                                style="display: inline-block; background: #2196F3; color: white; padding: 1px 6px; border-radius: 3px; font-family: monospace; margin: 0 3px; font-size: 13px;">2-3</span>
+                            VREF to Resistor Input</li>
+                        <li><span
+                                style="display: inline-block; background: #2196F3; color: white; padding: 1px 6px; border-radius: 3px; font-family: monospace; margin: 0 3px; font-size: 13px;">4-8</span>
+                            Resistor Output to Integrator Inverting Input</li>
+                        <li><span
+                                style="display: inline-block; background: #2196F3; color: white; padding: 1px 6px; border-radius: 3px; font-family: monospace; margin: 0 3px; font-size: 13px;">38-9</span>
+                            Ground to Integrator Non-Inverting Input</li>
+                        <li><span
+                                style="display: inline-block; background: #2196F3; color: white; padding: 1px 6px; border-radius: 3px; font-family: monospace; margin: 0 3px; font-size: 13px;">39-8</span>
+                            Capacitor Terminal 1 to Integrator Inverting Input</li>
+                        <li><span
+                                style="display: inline-block; background: #2196F3; color: white; padding: 1px 6px; border-radius: 3px; font-family: monospace; margin: 0 3px; font-size: 13px;">40-10</span>
+                            Capacitor Terminal 2 to Integrator Output</li>
+                        <li><span
+                                style="display: inline-block; background: #2196F3; color: white; padding: 1px 6px; border-radius: 3px; font-family: monospace; margin: 0 3px; font-size: 13px;">14-26</span>
+                            Counter Bit 0 to Buffer Bit 4</li>
+                    </ul>
+                </div>
+
+                <svg id="circuitTempLineSvg"
+                    style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 5;">
+                    <line id="circuitTempLine" x1="0" y1="0" x2="0" y2="0" stroke="red" stroke-width="4"
+                        opacity="0.5" style="display: none;" />
+                </svg>
+
+                <div title="VIN" class="circuit-parent" id="circuitCanvas">
+                    <!-- VIN -->
+                    <div class="circuit-block" style="grid-area: 3 / 1 / 4 / 2;">
+                        <h5>V<sub>in</sub></h5>
+                        <div class="circuit-dot" id="circuitDot1" style="left:45px; top:28px;"
+                            title="VIN Output (1)"></div>
+                    </div>
+
+                    <!-- VREF -->
+                    <div class="circuit-block" style="grid-area: 5 / 1 / 6 / 2;">
+                        <h6>-V<sub>ref</sub></h6>
+                        <div class="circuit-dot" id="circuitDot2" style="left:48px; top:26px;"
+                            title="VREF Output (2)"></div>
+                    </div>
+
+                    <!-- RESISTOR -->
+                    <div class="circuit-block" style="grid-area: 5 / 2 / 6 / 4; margin: 0 15px;">
+                        <img title="RESISTOR" src="./imagessingle/resistor.png" alt="Resistor">
+                        <div class="circuit-dot" id="circuitDot3" style="left:15px; top:30px;"
+                            title="Resistor Input (3)"></div>
+                        <div class="circuit-dot" id="circuitDot4" style="right:10px; top:30px;"
+                            title="Resistor Output (4)"></div>
+                    </div>
+
+                    <!-- COMPARATOR -->
+                    <div class="circuit-block" style="grid-area: 2 / 3 / 4 / 6;">
+                        <img title="COMPARATOR" src="./imagessingle/camparator.png" alt="Comparator">
+                        <div class="circuit-dot" id="circuitDot5" style="left:31px; top:35px;"
+                            title="Comparator Inverting Input (-) (5)"></div>
+                        <div class="circuit-dot" id="circuitDot6" style="left:31px; top:95px;"
+                            title="Comparator Non-Inverting Input (+) (6)"></div>
+                        <div class="circuit-dot" id="circuitDot7" style="left:175px; top:64px;"
+                            title="Comparator Output (7)"></div>
+                    </div>
+
+                    <!-- INTEGRATOR -->
+                    <div class="circuit-block" style="grid-area: 5 / 4 / 7 / 6;">
+                        <img title="INTEGRATOR " src="./imagessingle/integrator.png" alt="Integrator">
+                        <div class="circuit-dot" id="circuitDot8" style="left:15px; top:50px;"
+                            title="Integrator Inverting Input (-) (8)"></div>
+                        <div class="circuit-dot" id="circuitDot9" style="left:15px; top:85px;"
+                            title="Integrator Non-Inverting Input (+) (9)"></div>
+                        <div class="circuit-dot" id="circuitDot10" style="left:115px; top:66px;"
+                            title="Integrator Output (10)"></div>
+                    </div>
+
+                    <!-- CLOCK -->
+                    <div class="circuit-block" style="grid-area: 1 / 7 / 2 / 8;">
+                        <h5>Clock</h5>
+                        <div class="circuit-dot" id="circuitDot11" style="left:28px; bottom:2px;"
+                            title="Clock Output (11)"></div>
+                    </div>
+
+                    <!-- COUNTER -->
+                    <div class="circuit-block" style="grid-area: 2 / 9 / 5 / 12;">
+                        <img title="COUNTER" src="./imagessingle/counter.png" alt="Counter">
+                        <div class="circuit-dot" id="circuitDot12" style="left:15px; top:70px;"
+                            title="Counter Clock Input (12)"></div>
+                        <div class="circuit-dot" id="circuitDot13" style="left:15px; top:98px;"
+                            title="Counter Reset Input (13)"></div>
+                        <div class="circuit-dot" id="circuitDot14" style="left:100px; bottom:15px;"
+                            title="Counter Bit 0 Output (14)"></div>
+                    </div>
+
+                    <!-- BUFFER -->
+                    <div class="circuit-block" style="grid-area: 6 / 9 / 8 / 12;">
+                        <img title="BUFFER" src="./imagessingle/buffer.png" alt="Buffer">
+                        <div class="circuit-dot" id="circuitDot26" style="left:100px; top:15px;"
+                            title="Buffer Bit 4 Input (26)"></div>
+                        <!-- <div class="circuit-dot" id="circuitDot34" style="left:100px; bottom:15px;"
+                            title="Buffer Bit 4 Output (34)"></div> -->
+                        <div class="circuit-dot" id="circuitDot41" style="left:0px; bottom:70px;"
+                            title="Buffer Control Input (41)"></div>
+                    </div>
+
+                    <!-- GROUND -->
+                    <div class="circuit-block" style="grid-area: 7 / 2 / 8 / 3;">
+                        <img title="GROUND" src="./imagessingle/ground.png" alt="Ground">
+                        <div class="circuit-dot" id="circuitDot38" style="left:40px; top:12px;" title="Ground (38)">
+                        </div>
+                    </div>
+
+                    <!-- CAPACITOR -->
+                    <div class="circuit-block" style="grid-area: 4 / 5 / 5 / 6;">
+                        <img title="CAPACITOR" src="./imagessingle/capacitor.png" alt="Capacitor">
+                        <div class="circuit-dot" id="circuitDot39" style="left:2px; top:26px;"
+                            title="Capacitor Terminal 1 (39)"></div>
+                        <div class="circuit-dot" id="circuitDot40" style="right:2px; top:26px;"
+                            title="Capacitor Terminal 2 (40)"></div>
+                    </div>
+                </div>
+
+                <div class="circuit-controls">
+                    <button id="circuitCheckBtn" class="circuit-btn" style="background: #2196F3; color: white;">
+                        <i class="fas fa-check-circle"></i> Check Connections
+                    </button>
+                    <button id="circuitAutoConnectBtn" class="circuit-btn"
+                        style="background: #4CAF50; color: white;">
+                        <i class="fas fa-bolt"></i> Auto-Connect 
+                    </button>
+                    <button id="circuitClearBtn" class="circuit-btn" style="background: #f44336; color: white;">
+                        <i class="fas fa-trash-alt"></i> Clear Connections
+                    </button>
+                    <button id="circuitShowRequiredBtn" class="circuit-btn"
+                        style="background: #17a2b8; color: white; display: none;">
+                        <i class="fas fa-list"></i> Show Required
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sidebar Card -->
+            <div class="card sidebar-card sidebar-wide" style="width: 10px;">
+                <div class="card-header" style="display: flex;justify-content: space-between;">
+                    <div> <i class="bi bi-sliders"></i> ADC Parameters </div>
+                    <div> 
+                        <button class="instrucButton" title="Show Instructions">
+                            <i class="bi bi-info-circle"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Connection Status -->
+                    <div id="connectionStatus" class="connection-status">
+                        <i class="bi bi-info-circle"></i>
+                        <span id="connectionStatusText">All connections must be correct before running simulation</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="bits" class="form-label">Number of Bits</label>
+                        <input type="number" class="form-control" id="bits" min="1" max="16" value="8">
+                    </div>
+
+                    <!-- Timing Control Group -->
+                    <div class="timing-control-group">
+                        <div class="timing-label">ADC Conversion Timing</div>
+                        <label for="maxCountTimeSlider" class="form-label">Max Count Time: <span id="maxCountTimeValue">50</span> ms</label>
+                        <input type="range" class="form-range" id="maxCountTimeSlider" min="10" max="100" step="1" value="50">
+                        <div class="d-flex justify-content-between">
+                            <small>10ms</small>
+                            <small>100ms</small>
+                        </div>
+                        
+                        <div class="mt-2">
+                            <div class="text-muted small">Clock Frequency:</div>
+                            <div class="timing-value-display" id="calculatedClockFreq">1.28 kHz</div>
+                        </div>
+                    </div>
+
+                    <!-- Op-Amp Supply Voltage -->
+                    <div class="mb-3">
+                        <label for="opampSupply" class="form-label">Op-Amp Supply Voltage (±V)</label>
+                        <input type="number" class="form-control" id="opampSupply" min="3" max="36" step="0.1" value="15">
+                        <div class="d-flex justify-content-between mt-1">
+                            <small class="text-muted">±3V to ±36V</small>
+                        </div>
+                        <div id="opampSupplyWarning" class="voltage-safe">
+                         Op-amp can handle voltages within ±36V
+                        </div>
+                    </div>
+
+                    <!-- Reference Voltage with warning -->
+                    <div class="mb-3">
+                        <label for="vref" class="form-label">Reference Voltage (V<sub>REF</sub>)</label>
+                        <input type="number" class="form-control" id="vref" min="0.1" max="50" step="0.1" value="5">
+                        <div class="d-flex justify-content-between mt-1">
+                            <small class="text-muted">0.1V to 50V</small>
+                        </div>
+                        <div id="vrefWarning" class="voltage-safe">
+                             Vref is within op-amp limits
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="capacitance" class="form-label">Integrator Capacitor (µF)</label>
+                        <input type="number" class="form-control" id="capacitance" min="10" max="470" step="1" value="100">
+                        <div class="d-flex justify-content-between mt-1">
+                            <small class="text-muted">10 µF</small>
+                            <small class="text-muted">470 µF</small>
+                        </div>
+                    </div>
+
+                    <!-- Input Voltage with warning -->
+                    <div class="mb-3">
+                        <label for="voltageSlider" class="form-label">Input Voltage: <span
+                                id="voltageValue">2.500</span> V</label>
+                        <input type="range" class="form-range" id="voltageSlider" min="0" max="5" step="0.01"
+                            value="2.5">
+                        <div class="d-flex justify-content-between">
+                            <small>0V</small>
+                            <small id="maxVoltageLabel">5V</small>
+                        </div>
+                        <div id="inputVoltageWarning" class="voltage-safe">
+                          Input voltage is safe for op-amp
+                        </div>
+                    </div>
+
+                    <div class="btn-group-responsive">
+                        <button id="calculateBtn" class="btn btn-primary mb-2">
+                           Calculate RC Parameters
+                        </button>
+                        <button id="resetBtn" class="btn btn-danger mb-2">
+                           Reset All
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br><br><br>
+
+        <!-- RC Parameters Results Card -->
+        <div class="card" id="rcResults" style="display: none;">
+            <div class="card-header">
+                <i class="bi bi-info-circle"></i> RC Integrator Parameters
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <div class="text-muted small">Max Count Time</div>
+                        <div class="param-value" id="maxCountTimeDisplay">50.000 ms</div>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <div class="text-muted small">Clock Frequency</div>
+                        <div class="param-value" id="clockFrequencyDisplay">1.280 kHz</div>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <div class="text-muted small">Required Resistance</div>
+                        <div class="param-value" id="resistanceValue">0.000 kΩ</div>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <div class="text-muted small">Ramp Slope</div>
+                        <div class="param-value" id="rampSlope">0.000 V/s</div>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <div class="text-muted small">Clock Period</div>
+                        <div class="param-value" id="clockPeriod">0.781 ms</div>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <div class="text-muted small">Capacitor Value</div>
+                        <div class="param-value" id="capacitanceDisplay">100.000 µF</div>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <div class="text-muted small">Op-Amp Supply</div>
+                        <div class="param-value" id="opampSupplyDisplay">±15.0 V</div>
+                    </div>
+                    <div class="col-6 mb-3" style="display: none;">
+                        <div class="text-muted small">Vref/Supply Ratio</div>
+                        <div class="param-value" id="vrefRatioDisplay">33.3%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visualization section with ID for scrolling -->
+        <div id="visualizationSection">
+            <!-- Conversion Visualization Card -->
+            <div class="card conversion-card">
+                <div class="card-header">
+                    <i class="bi bi-graph-up"></i> Output Graph
+                </div>
+                <div class="card-body">
+                    <div class="position-relative">
+                        <canvas id="adcCanvas"></canvas>
+                        <div class="position-absolute top-0 end-0 mt-3 me-3">
+                            <div class="d-flex bg-white p-2 rounded shadow-sm">
+                                <div class="legend-item">
+                                    <div class="legend-color legend-input"></div>
+                                    <small>Input Voltage</small>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color legend-ramp"></div>
+                                    <small>Ramp Voltage</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 text-center" style="display: none;">
+                        <i class="bi bi-clock"></i> Generating: <span id="progressText">0%</span>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-4 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <div class="text-muted small">Counter Value</div>
+                                    <div class="h4" id="counterDisplay">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <div class="text-muted small">Ramp Voltage</div>
+                                    <div class="h4" id="rampVoltageDisplay">0.000 V</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <div class="text-muted small">Status</div>
+                                    <div class="h4 status-ready" id="statusDisplay">Ready</div>
+                                </div>
+                            </div>
+                        </div>
+                        <button id="startBtn" class="btn btn-danger mb-2 offset-3 col-6" disabled>
+                            <i class="bi bi-play-circle"></i> Run Simulation
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Digital Output Card -->
+            <div class="card digital-output-card">
+                <div class="card-header">
+                    <i class="bi bi-code-slash"></i> Digital Output
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-primary">
+                                <div class="card-body text-center">
+                                    <div class="text-muted">Decimal</div>
+                                    <div class="output-value text-primary" id="decimalOutput">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-success">
+                                <div class="card-body text-center">
+                                    <div class="text-muted">Binary (8-bit)</div>
+                                    <div class="output-value text-success" id="binaryOutput">00000000</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <div class="text-muted small">Resolution</div>
+                                    <div style="display: flex;justify-content: center;">
+                                        <div class="h5" id="resolutionDisplay">8</div>
+                                        <div style="padding: 3px 0px 0px 0px;" class="text-muted small">&nbsp;<strong>bits</strong> </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <div class="text-muted small">V<sub>REF</sub></div>
+                                    <div style="display: flex;justify-content: center;">
+                                        <div class="h5" id="vrefDisplay">5.0</div>
+                                        <div style="padding: 3px 0px 0px 0px;" class="text-muted small">&nbsp;<strong>V</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <div class="text-muted small">Step Size</div>
+                                    <div style="display: flex;justify-content: center;">
+                                        <div class="h5" id="stepSizeDisplay">19.61</div>
+                                        <div style="padding: 3px 0px 0px 0px;" class="text-muted small">&nbsp;<strong>mV</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <div class="text-muted small">Max Digital Value</div>
+                                    <div class="h5" id="maxDigitalValue">255</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Instructions Overlay -->
+    <div class="instructions-overlay" id="instructionsOverlay"></div>
+    
+    <!-- Floating Instructions Panel -->
+    <div class="floating-instructions" id="floatingInstructions">
+        <div class="floating-instructions-header">
+            <h5 class="mb-0"><i class="bi bi-book me-2"></i> How to Use</h5>
+            <button class="close-instructions" id="closeInstructions">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div class="floating-instructions-body">
+            <p>
+                This simulator demonstrates the working principle of a
+                <strong>Single Slope Analog-to-Digital Converter (ADC)</strong> using an
+                RC integrator, comparator, clock, counter, and time-based ramp comparison.
+            </p>
+
+            <h6 class="mt-3"><strong>Workflow (Follow Strictly)</strong></h6>
+            <ol>
+                <li>Make circuit connections</li>
+                <li>Check connections</li>
+                <li>Set ADC parameters</li>
+                <li>Calculate RC parameters</li>
+                <li>Run the simulation</li>
+                <li>Observe graph and digital output</li>
+                <li>Reset if required</li>
+            </ol>
+
+            <h6 class="mt-3"><strong>New Parameter Setup</strong></h6>
+            <ul>
+                <li><strong>Max Count Time:</strong> Set desired conversion time (10ms - 100ms)</li>
+                <li><strong>Op-Amp Supply:</strong> Set op-amp supply voltage (±3V to ±36V)</li>
+                <li><strong>Reference Voltage:</strong> Can be higher than op-amp supply (0.1V to 50V)</li>
+                <li><strong>Integrator Capacitor:</strong> Choose capacitor value (10µF - 470µF)</li>
+                <li><strong>Clock Frequency:</strong> Automatically calculated based on bits and max count time</li>
+                <li><strong>Required Resistance:</strong> Calculated from max count time and capacitor value</li>
+            </ul>
+
+            <h6 class="mt-3"><strong>Voltage Limitations</strong></h6>
+            <ul>
+                <li>Op-amp typically works with ±3V to ±36V supply</li>
+                <li>Vref can exceed op-amp supply voltage in some configurations</li>
+                <li>Input voltage must be less than Vref for accurate conversion</li>
+                <li>Warnings will appear if voltages exceed safe limits</li>
+            </ul>
+
+            <h6 class="mt-3"><strong>Circuit Connections</strong></h6>
+            <ul>
+                <li>Use red dots to create connections (click → drag → release)</li>
+                <li>Green dot indicates a successful connection</li>
+                <li>Total required connections: <strong>11</strong></li>
+            </ul>
+
+            <p class="mb-1 mt-3"><strong>Key Required Links:</strong></p>
+            <ul>
+                <li>VIN → Comparator (+)</li>
+                <li>Integrator Output → Comparator (−)</li>
+                <li>Comparator Output → Counter Reset</li>
+                <li>Clock → Counter Clock</li>
+                <li>VREF → Resistor → Integrator</li>
+                <li>Capacitor across Integrator</li>
+                <li>Counter → Buffer</li>
+            </ul>
+
+            <div class="alert alert-warning p-2 mt-3 mb-0">
+                <strong>Note:</strong> Simulation remains locked if any required connection is missing or incorrect.
+            </div>
+            
+            <div class="alert alert-info p-2 mt-3 mb-0">
+                <strong>Tip:</strong> Use "Auto-Connect All" button to quickly set up all required connections.
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.6/js/jsplumb.min.js"></script>
+
+    <script>
+        // Instructions Panel Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get elements
+            const instrucButton = document.querySelector('.instrucButton');
+            const floatingInstructions = document.getElementById('floatingInstructions');
+            const instructionsOverlay = document.getElementById('instructionsOverlay');
+            const closeInstructions = document.getElementById('closeInstructions');
+            
+            // Toggle instructions panel
+            function toggleInstructions() {
+                if (floatingInstructions.style.display === 'block') {
+                    floatingInstructions.style.display = 'none';
+                    instructionsOverlay.style.display = 'none';
+                } else {
+                    floatingInstructions.style.display = 'block';
+                    instructionsOverlay.style.display = 'block';
+                }
+            }
+            
+            // Event listeners
+            if (instrucButton) {
+                instrucButton.addEventListener('click', toggleInstructions);
+            }
+            
+            if (closeInstructions) {
+                closeInstructions.addEventListener('click', toggleInstructions);
+            }
+            
+            if (instructionsOverlay) {
+                instructionsOverlay.addEventListener('click', toggleInstructions);
+            }
+            
+            // Close with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && floatingInstructions.style.display === 'block') {
+                    toggleInstructions();
+                }
+            });
+        });
+
+        // Disable text selection and right-click
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+            return false;
+        });
+
+        document.addEventListener('selectstart', function (e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Disable keyboard shortcuts
+        document.addEventListener('keydown', function (e) {
+            // Disable Ctrl+C, Ctrl+X, Ctrl+V, Ctrl+A, Ctrl+U, Ctrl+P, Ctrl+S, F12, etc.
+            if (e.ctrlKey && (e.key === 'c' || e.key === 'C' ||
+                e.key === 'x' || e.key === 'X' ||
+                e.key === 'v' || e.key === 'V' ||
+                e.key === 'a' || e.key === 'A' ||
+                e.key === 'u' || e.key === 'U' ||
+                e.key === 'p' || e.key === 'P' ||
+                e.key === 's' || e.key === 'S')) {
+                e.preventDefault();
+                return false;
+            }
+
+            // Disable F12 for dev tools
+            if (e.key === 'F12') {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // State variables
+        let isConverting = false;
+        let counter = 0;
+        let rampVoltage = 0;
+        let digitalOutput = 0;
+        let intervalId = null;
+        let clockSpeed = 100; // Default clock speed in ms
+        let VREF = 5.0;
+        let bits = 8;
+        let MAX_COUNT = 255;
+        let STEP_SIZE = 0.0196; // V
+        let inputVoltage = 2.5;
+        let resistance = 100000; // Ω
+        let capacitance = 100e-6; // F (100 µF default)
+        let maxCountTime = 0.05; // s (50ms default)
+        let opampSupply = 15.0; // Op-amp supply voltage in volts
+        let areConnectionsCorrect = false;
+
+        // DOM Elements
+        const voltageSlider = document.getElementById('voltageSlider');
+        const voltageValue = document.getElementById('voltageValue');
+        const maxVoltageLabel = document.getElementById('maxVoltageLabel');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const counterDisplay = document.getElementById('counterDisplay');
+        const rampVoltageDisplay = document.getElementById('rampVoltageDisplay');
+        const statusDisplay = document.getElementById('statusDisplay');
+        const progressText = document.getElementById('progressText');
+        const decimalOutput = document.getElementById('decimalOutput');
+        const binaryOutput = document.getElementById('binaryOutput');
+        const resolutionDisplay = document.getElementById('resolutionDisplay');
+        const vrefDisplay = document.getElementById('vrefDisplay');
+        const stepSizeDisplay = document.getElementById('stepSizeDisplay');
+        const maxDigitalValue = document.getElementById('maxDigitalValue');
+        const canvas = document.getElementById('adcCanvas');
+        const ctx = canvas.getContext('2d');
+        const rcResults = document.getElementById('rcResults');
+        const clockPeriodEl = document.getElementById('clockPeriod');
+        const maxCountTimeEl = document.getElementById('maxCountTimeDisplay');
+        const resistanceValueEl = document.getElementById('resistanceValue');
+        const rampSlopeEl = document.getElementById('rampSlope');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const connectionStatusText = document.getElementById('connectionStatusText');
+        const visualizationSection = document.getElementById('visualizationSection');
+        const maxCountTimeSlider = document.getElementById('maxCountTimeSlider');
+        const maxCountTimeValue = document.getElementById('maxCountTimeValue');
+        const calculatedClockFreq = document.getElementById('calculatedClockFreq');
+        const capacitanceInput = document.getElementById('capacitance');
+        const clockFrequencyDisplay = document.getElementById('clockFrequencyDisplay');
+        const capacitanceDisplay = document.getElementById('capacitanceDisplay');
+        const opampSupplyInput = document.getElementById('opampSupply');
+        const opampSupplyWarning = document.getElementById('opampSupplyWarning');
+        const vrefWarning = document.getElementById('vrefWarning');
+        const inputVoltageWarning = document.getElementById('inputVoltageWarning');
+        const opampSupplyDisplay = document.getElementById('opampSupplyDisplay');
+        const vrefRatioDisplay = document.getElementById('vrefRatioDisplay');
+
+        // Initialize canvas size
+        function initCanvas() {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = 400;
+        }
+
+        // Calculate clock frequency from max count time and bits
+        function calculateClockFrequency() {
+            updateParameters();
+            
+            // Calculate required clock frequency:
+            // Max count time = (2^n - 1) * T_clk
+            // So T_clk = Max count time / (2^n - 1)
+            // f_clk = 1 / T_clk = (2^n - 1) / Max count time
+            
+            const maxCountTimeMs = parseFloat(maxCountTimeSlider.value) || 50; // in ms
+            maxCountTime = maxCountTimeMs / 1000; // convert to seconds
+            
+            const Tclk = maxCountTime / MAX_COUNT; // Clock period in seconds
+            const fclk = 1 / Tclk; // Clock frequency in Hz
+            
+            // Update display
+            maxCountTimeValue.textContent = maxCountTimeMs;
+            calculatedClockFreq.textContent = (fclk / 1000).toFixed(3) + ' kHz';
+            
+            return { Tclk, fclk };
+        }
+
+        // Check voltage limits and show warnings
+        function checkVoltageLimits() {
+            const opampSupplyVal = parseFloat(opampSupplyInput.value) || 15;
+            const vrefVal = parseFloat(document.getElementById('vref').value) || 5;
+            const inputVoltageVal = parseFloat(voltageSlider.value) || 2.5;
+            
+            // Check op-amp supply voltage
+            if (opampSupplyVal < 3) {
+                opampSupplyWarning.innerHTML = ' Warning: Op-amp supply voltage is very low (< 3V)';
+                opampSupplyWarning.className = 'voltage-warning';
+            } else if (opampSupplyVal > 36) {
+                opampSupplyWarning.innerHTML = 'Warning: Op-amp supply voltage exceeds typical maximum (36V)';
+                opampSupplyWarning.className = 'voltage-warning';
+            } else {
+                opampSupplyWarning.innerHTML = 'Op-amp supply voltage is within typical limits (3-36V)';
+                opampSupplyWarning.className = 'voltage-safe';
+            }
+            
+            // Check Vref vs op-amp supply
+            const vrefToSupplyRatio = (vrefVal / opampSupplyVal) * 100;
+            if (vrefVal > opampSupplyVal) {
+                vrefWarning.innerHTML = `Note: Vref (${vrefVal}V) exceeds op-amp supply (±${opampSupplyVal}V) - this may cause saturation`;
+                vrefWarning.className = 'voltage-warning';
+            } else if (vrefVal > opampSupplyVal * 0.8) {
+                vrefWarning.innerHTML = `Warning: Vref (${vrefVal}V) is close to op-amp supply (±${opampSupplyVal}V)`;
+                vrefWarning.className = 'voltage-warning';
+            } else {
+                vrefWarning.innerHTML = `Vref (${vrefVal}V) is within op-amp supply (±${opampSupplyVal}V) limits`;
+                vrefWarning.className = 'voltage-safe';
+            }
+            
+            // Check input voltage vs Vref
+            if (inputVoltageVal > vrefVal) {
+                inputVoltageWarning.innerHTML = `Warning: Input voltage (${inputVoltageVal}V) exceeds Vref (${vrefVal}V) - ADC will saturate`;
+                inputVoltageWarning.className = 'voltage-warning';
+            } else if (inputVoltageVal > vrefVal * 0.9) {
+                inputVoltageWarning.innerHTML = `Warning: Input voltage (${inputVoltageVal}V) is close to Vref (${vrefVal}V)`;
+                inputVoltageWarning.className = 'voltage-warning';
+            } else {
+                inputVoltageWarning.innerHTML = `Input voltage (${inputVoltageVal}V) is within Vref (${vrefVal}V) range`;
+                inputVoltageWarning.className = 'voltage-safe';
+            }
+            
+            return { opampSupplyVal, vrefVal, inputVoltageVal, vrefToSupplyRatio };
+        }
+
+        // Initialize
+        function init() {
+            initCanvas();
+            updateParameters();
+            updateVoltageSlider();
+            updateDisplays();
+            drawGraph();
+            updateConnectionStatus();
+            calculateClockFrequency(); // Initial calculation
+            checkVoltageLimits(); // Initial voltage check
+        }
+
+        // Update connection status display
+        function updateConnectionStatus(isCorrect = false, message = "", score = 0) {
+            areConnectionsCorrect = isCorrect;
+
+            if (isCorrect) {
+                connectionStatus.className = 'connection-status connected';
+                connectionStatusText.innerHTML = `<i class="bi bi-check-circle-fill"></i> ${message || "All connections are correct! Simulation ready."}`;
+                startBtn.disabled = false;
+                startBtn.innerHTML = '<i class="bi bi-play-circle"></i> Run Simulation';
+
+                // Show success alert
+                Swal.fire(`CONNECTIONS CORRECT!\nYou can now run the simulation.`);
+
+                // Scroll to visualization
+                setTimeout(() => {
+                    visualizationSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }, 500);
+            } else {
+                connectionStatus.className = 'connection-status disconnected';
+                connectionStatusText.innerHTML = `<i class="bi bi-exclamation-circle-fill"></i> ${message || "All connections must be correct before running simulation"}`;
+                startBtn.disabled = true;
+                startBtn.innerHTML = '<i class="bi bi-lock"></i> Complete Connections First';
+            }
+        }
+
+        // Update parameters from input fields
+        function updateParameters() {
+            bits = parseInt(document.getElementById('bits').value) || 8;
+            VREF = parseFloat(document.getElementById('vref').value) || 5;
+            capacitance = parseFloat(capacitanceInput.value) || 100; // in µF
+            capacitance = capacitance * 1e-6; // Convert to Farads
+            inputVoltage = parseFloat(voltageSlider.value) || 2.5;
+            opampSupply = parseFloat(opampSupplyInput.value) || 15;
+
+            MAX_COUNT = Math.pow(2, bits)-1;
+            STEP_SIZE = VREF / MAX_COUNT;
+        }
+
+        // Calculate RC parameters
+        function calculateRCParams() {
+            updateParameters();
+            
+            // Check voltage limits first
+            const voltageCheck = checkVoltageLimits();
+            
+            // Get max count time from slider (in ms, convert to seconds)
+            const maxCountTimeMs = parseFloat(maxCountTimeSlider.value) || 50;
+            maxCountTime = maxCountTimeMs / 1000; // Convert to seconds
+            
+            // Calculate clock frequency based on max count time and bits
+            const { Tclk, fclk } = calculateClockFrequency();
+            
+            // Calculate required resistance: Tmax = R * C => R = Tmax / C
+            resistance = maxCountTime / capacitance;
+            
+            // Calculate ramp slope: slope = Vref / (R * C)
+            const rampSlope = VREF / (resistance * capacitance);
+            
+            // Update RC results display
+            maxCountTimeEl.textContent = maxCountTimeMs.toFixed(3) + ' ms';
+            clockFrequencyDisplay.textContent = (fclk / 1000).toFixed(3) + ' kHz';
+            resistanceValueEl.textContent = (resistance / 1000).toFixed(1) + ' kΩ';
+            rampSlopeEl.textContent = rampSlope.toFixed(3) + ' V/s';
+            clockPeriodEl.textContent = (Tclk * 1000).toFixed(3) + ' ms';
+            capacitanceDisplay.textContent = (capacitance * 1e6).toFixed(3) + ' µF';
+            opampSupplyDisplay.textContent = `±${opampSupply.toFixed(1)} V`;
+            vrefRatioDisplay.textContent = ((VREF / opampSupply) * 100).toFixed(1) + '%';
+            
+            rcResults.style.display = 'block';
+            
+            // Update clock speed for simulation (convert to ms)
+            clockSpeed = Tclk * 1000; // Convert to milliseconds
+            
+            // Only enable start button if connections are correct
+            if (areConnectionsCorrect) {
+                startBtn.disabled = false;
+            }
+
+            updateDisplays();
+            updateVoltageSlider();
+            drawGraph();
+            
+            // Show success message with voltage info
+            let voltageInfo = '';
+            if (VREF > opampSupply) {
+                voltageInfo = `<br><br><strong>Note:</strong> Vref (${VREF}V) exceeds op-amp supply (±${opampSupply}V). This configuration is allowed but may cause op-amp saturation in real circuits.`;
+            }
+            
+            Swal.fire({
+                title: 'RC Parameters Calculated!',
+                html: `
+                    <div style="text-align: left; font-size: 0.9rem;">
+                        <strong>Results:</strong><br>
+                        • Max Count Time: ${maxCountTimeMs} ms<br>
+                        • Clock Frequency: ${(fclk/1000).toFixed(3)} kHz<br>
+                        • Required Resistance: ${(resistance/1000).toFixed(1)} kΩ<br>
+                        • Capacitor: ${(capacitance*1e6).toFixed(1)} µF<br>
+                        • Ramp Slope: ${rampSlope.toFixed(1)} V/s<br>
+                        • Op-Amp Supply: ±${opampSupply}V<br>
+                        • Vref/Supply Ratio: ${((VREF/opampSupply)*100).toFixed(1)}%
+                    </div>
+                    ${voltageInfo}
+                `,
+                icon: 'success'
+            });
+        }
+
+        // Update voltage slider based on VREF
+        function updateVoltageSlider() {
+            voltageSlider.max = VREF;
+            voltageSlider.step = VREF / 100;
+            maxVoltageLabel.textContent = VREF.toFixed(1) + 'V';
+
+            // Adjust input voltage if needed
+            if (inputVoltage > VREF) {
+                inputVoltage = VREF;
+                voltageSlider.value = inputVoltage;
+            }
+            voltageValue.textContent = inputVoltage.toFixed(3);
+        }
+
+        // Update all displays
+        function updateDisplays() {
+            resolutionDisplay.textContent = bits;
+            vrefDisplay.textContent = VREF.toFixed(1);
+            stepSizeDisplay.textContent = (STEP_SIZE * 1000).toFixed(2);
+            maxDigitalValue.textContent = MAX_COUNT;
+
+            counterDisplay.textContent = counter;
+            rampVoltageDisplay.textContent = rampVoltage.toFixed(3) + ' V';
+
+            updateOutput();
+        }
+
+        // Update digital output displays
+        function updateOutput() {
+            decimalOutput.textContent = digitalOutput;
+            binaryOutput.textContent = digitalOutput.toString(2).padStart(bits, '0');
+        }
+
+        // Reset conversion state only (for internal use)
+        function resetConversionState() {
+            counter = 0;
+            rampVoltage = 0;
+            digitalOutput = 0;
+            isConverting = false;
+            progressText.textContent = '0%';
+        }
+
+        // Reset only the conversion (without clearing circuit)
+        function resetConversion() {
+            if (intervalId) {
+                clearInterval(intervalId);
+                intervalId = null;
+            }
+            
+            resetConversionState();
+            
+            startBtn.disabled = !areConnectionsCorrect;
+            calculateBtn.disabled = false;
+            voltageSlider.disabled = false;
+            maxCountTimeSlider.disabled = false;
+            capacitanceInput.disabled = false;
+            opampSupplyInput.disabled = false;
+            
+            statusDisplay.textContent = 'Ready';
+            statusDisplay.className = 'h4 status-ready';
+            
+            updateDisplays();
+            drawGraph();
+        }
+
+        // Start conversion (only if connections are correct)
+        function startConversion() {
+            if (!areConnectionsCorrect) {
+                Swal.fire("Please complete all connections correctly before running simulation!");
+                document.getElementById('circuitCheckBtn').click();
+                return;
+            }
+
+            if (isConverting) return;
+
+            resetConversionState();
+            isConverting = true;
+
+            startBtn.disabled = true;
+            calculateBtn.disabled = true;
+            voltageSlider.disabled = true;
+            maxCountTimeSlider.disabled = true;
+            capacitanceInput.disabled = true;
+            opampSupplyInput.disabled = true;
+
+            statusDisplay.textContent = 'Converting';
+            statusDisplay.className = 'h4 status-converting';
+
+            intervalId = setInterval(updateConversion, clockSpeed);
+        }
+
+        // Update conversion progress
+        function updateConversion() {
+            counter++;
+            rampVoltage = (counter / MAX_COUNT) * VREF;
+
+            const progress = Math.min((counter / MAX_COUNT) * 100, 100);
+            progressText.textContent = progress.toFixed(1) + '%';
+
+            updateDisplays();
+            drawGraph();
+
+            if (rampVoltage >= inputVoltage || counter >= MAX_COUNT) {
+                digitalOutput = Math.min(counter, MAX_COUNT);
+
+                clearInterval(intervalId);
+                isConverting = false;
+
+                startBtn.disabled = !areConnectionsCorrect;
+                calculateBtn.disabled = false;
+                voltageSlider.disabled = false;
+                maxCountTimeSlider.disabled = false;
+                capacitanceInput.disabled = false;
+                opampSupplyInput.disabled = false;
+
+                statusDisplay.textContent = 'Complete';
+                statusDisplay.className = 'h4 status-complete';
+
+                updateOutput();
+            }
+        }
+
+        // COMPLETE RESET FUNCTION
+        function resetEverything() {
+            // 1. Stop any ongoing conversion
+            if (intervalId) {
+                clearInterval(intervalId);
+                intervalId = null;
+            }
+            
+            // 2. Reset conversion state
+            resetConversionState();
+            
+            // 3. Clear circuit connections
+            try {
+                // Call the circuit simulator's clear function
+                if (typeof window.circuitClearAllConnections === 'function') {
+                    window.circuitClearAllConnections();
+                } else {
+                    // Fallback: click the circuit clear button
+                    document.getElementById('circuitClearBtn')?.click();
+                }
+            } catch (error) {
+                console.log("Circuit reset error:", error);
+            }
+            
+            // 4. Reset ADC parameters to defaults
+            document.getElementById('bits').value = 8;
+            document.getElementById('vref').value = 5;
+            opampSupplyInput.value = 15;
+            capacitanceInput.value = 100;
+            maxCountTimeSlider.value = 50;
+            voltageSlider.value = 2.5;
+            voltageValue.textContent = '2.500';
+            
+            // 5. Re-enable all inputs
+            startBtn.disabled = true;
+            calculateBtn.disabled = false;
+            voltageSlider.disabled = false;
+            maxCountTimeSlider.disabled = false;
+            capacitanceInput.disabled = false;
+            opampSupplyInput.disabled = false;
+            document.getElementById('bits').disabled = false;
+            document.getElementById('vref').disabled = false;
+            
+            // 6. Hide RC results
+            rcResults.style.display = 'none';
+            
+            // 7. Reset connection status
+            areConnectionsCorrect = false;
+            updateConnectionStatus(false, "All connections must be correct before running simulation");
+            
+            // 8. Update displays with new values
+            updateParameters();
+            calculateClockFrequency();
+            checkVoltageLimits();
+            updateDisplays();
+            drawGraph();
+            
+            // 9. Update status display
+            statusDisplay.textContent = 'Ready';
+            statusDisplay.className = 'h4 status-ready';
+            
+            // 10. Scroll to top of visualization
+            setTimeout(() => {
+                visualizationSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }, 100);
+            
+            // 11. Show reset confirmation
+            Swal.fire("System has been completely reset to initial state.\nAll circuit connections cleared.\nParameters reset to default values.");
+        }
+
+        // Draw the graph
+        function drawGraph() {
+            const width = canvas.width;
+            const height = canvas.height;
+            const padding = 60;
+            const graphWidth = width - 2 * padding;
+            const graphHeight = height - 2 * padding;
+
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+
+            // Draw background grid
+            drawGrid(padding, graphWidth, graphHeight);
+
+            // Draw axes
+            ctx.strokeStyle = '#6c757d';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.stroke();
+
+            // Draw Y-axis labels
+            ctx.fillStyle = '#6c757d';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'right';
+
+            const ySteps = 5;
+            for (let i = 0; i <= ySteps; i++) {
+                const voltage = (i / ySteps) * VREF;
+                const y = height - padding - (i / ySteps) * graphHeight;
+
+                ctx.fillText(voltage.toFixed(1) + 'V', padding - 10, y + 4);
+            }
+
+            // Draw X-axis labels
+            ctx.textAlign = 'center';
+            for (let i = 0; i <= 4; i++) {
+                const count = (i / 4) * MAX_COUNT;
+                const x = padding + (i / 4) * graphWidth;
+
+                ctx.fillText(count.toFixed(0), x, height - padding + 20);
+            }
+
+            // Draw input voltage line
+            const inputY = height - padding - (inputVoltage / VREF) * graphHeight;
+            ctx.strokeStyle = '#198754';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(padding, inputY);
+            ctx.lineTo(width - padding, inputY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Draw ramp line
+            if (counter > 0) {
+                const rampX = padding + (counter / MAX_COUNT) * graphWidth;
+                const rampY = height - padding - (rampVoltage / VREF) * graphHeight;
+
+                ctx.strokeStyle = '#0d6efd';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(padding, height - padding);
+                ctx.lineTo(rampX, rampY);
+                ctx.stroke();
+
+                // Draw current point
+                ctx.fillStyle = '#0d6efd';
+                ctx.beginPath();
+                ctx.arc(rampX, rampY, 6, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+
+            // Draw titles
+            ctx.fillStyle = '#212529';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Time / Counter Value', width / 2, height - 15);
+
+            ctx.save();
+            ctx.translate(20, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('Voltage (V)', 0, 0);
+            ctx.restore();
+        }
+
+        // Draw grid
+        function drawGrid(padding, graphWidth, graphHeight) {
+            ctx.strokeStyle = '#e9ecef';
+            ctx.lineWidth = 1;
+
+            // Vertical grid lines
+            for (let i = 0; i <= 10; i++) {
+                const x = padding + (i / 10) * graphWidth;
+                ctx.beginPath();
+                ctx.moveTo(x, padding);
+                ctx.lineTo(x, padding + graphHeight);
+                ctx.stroke();
+            }
+
+            // Horizontal grid lines
+            for (let i = 0; i <= 10; i++) {
+                const y = padding + (i / 10) * graphHeight;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(padding + graphWidth, y);
+                ctx.stroke();
+            }
+        }
+
+        // Event Listeners
+        voltageSlider.addEventListener('input', (e) => {
+            inputVoltage = parseFloat(e.target.value);
+            voltageValue.textContent = inputVoltage.toFixed(3);
+            checkVoltageLimits();
+            drawGraph();
+        });
+
+        maxCountTimeSlider.addEventListener('input', (e) => {
+            maxCountTimeValue.textContent = e.target.value;
+            calculateClockFrequency();
+        });
+
+        document.getElementById('bits').addEventListener('input', () => {
+            updateParameters();
+            calculateClockFrequency();
+            updateDisplays();
+            drawGraph();
+        });
+
+        document.getElementById('vref').addEventListener('input', function() {
+            updateParameters();
+            checkVoltageLimits();
+            updateVoltageSlider();
+            drawGraph();
+        });
+
+        capacitanceInput.addEventListener('input', updateParameters);
+        
+        opampSupplyInput.addEventListener('input', function() {
+            updateParameters();
+            checkVoltageLimits();
+        });
+
+        calculateBtn.addEventListener('click', calculateRCParams);
+        startBtn.addEventListener('click', startConversion);
+        resetBtn.addEventListener('click', resetEverything);
+
+        // Also check connections when clicking start button (as additional safeguard)
+        startBtn.addEventListener('click', function (e) {
+            if (!areConnectionsCorrect) {
+                e.preventDefault();
+                Swal.fire("Please check connections first!");
+                document.getElementById('circuitCheckBtn').click();
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            initCanvas();
+            drawGraph();
+        });
+
+        // Listen for events from circuit simulator
+        window.addEventListener('circuitConnectionCheckResult', function (event) {
+            const allCorrect = event.detail.allCorrect;
+            const message = event.detail.message;
+            const score = event.detail.score || 0;
+
+            updateConnectionStatus(allCorrect, message, score);
+        });
+
+        window.addEventListener('circuitAutoConnected', function () {
+            setTimeout(() => {
+                document.getElementById('circuitCheckBtn').click();
+            }, 1000);
+        });
+
+        // Initialize the simulator
+        init();
+
+        // Circuit Simulator JavaScript
+        jsPlumb.ready(function () {
+            var instance = jsPlumb.getInstance({
+                Container: "circuitCanvas",
+                Connector: ["Bezier", { curviness: 60 }],
+                PaintStyle: { stroke: "red", strokeWidth: 4 },
+                Endpoint: ["Dot", { radius: 1 }],
+                EndpointStyle: { fill: "transparent" }
+            });
+
+            // ALL CONNECTIONS IN ONE ARRAY
+            const requiredConnections = [
+                ['circuitDot1', 'circuitDot6'],    // 1-6
+                ['circuitDot5', 'circuitDot10'],   // 5-10
+                ['circuitDot7', 'circuitDot13'],   // 7-13
+                ['circuitDot11', 'circuitDot12'],  // 11-12
+                ['circuitDot13', 'circuitDot41'],  // 13-41
+                ['circuitDot2', 'circuitDot3'],    // 2-3
+                ['circuitDot4', 'circuitDot8'],    // 4-8
+                ['circuitDot38', 'circuitDot9'],   // 38-9
+                ['circuitDot39', 'circuitDot8'],   // 39-8
+                ['circuitDot40', 'circuitDot10'],  // 40-10
+                ['circuitDot14', 'circuitDot26']   // 14-26
+            ];
+
+            let connectionCount = 0;
+            const requiredConnectionsDiv = document.getElementById('circuitRequiredConnections');
+
+            // Function to create a connection
+            function createConnection(sourceId, targetId) {
+                const sourceDot = document.getElementById(sourceId);
+                const targetDot = document.getElementById(targetId);
+
+                // Create jsPlumb connection
+                const connection = instance.connect({
+                    source: sourceId,
+                    target: targetId,
+                    anchor: ["Center", "Center"],
+                    connector: ["Bezier", { curviness: 60 }],
+                    paintStyle: {
+                        stroke: "red",
+                        strokeWidth: 4
+                    }
+                });
+
+                // Mark dots as connected
+                if (sourceDot) sourceDot.classList.add('connected');
+                if (targetDot) targetDot.classList.add('connected');
+
+                connectionCount++;
+
+                return connection;
+            }
+
+            let isDragging = false;
+            let startDot = null;
+            const tempLine = document.getElementById('circuitTempLine');
+
+            document.querySelectorAll('.circuit-dot').forEach(dot => {
+                dot.addEventListener('mousedown', function (e) {
+                    e.preventDefault();
+                    isDragging = true;
+                    startDot = this;
+                    startDot.classList.add('active');
+
+                    const rect = startDot.getBoundingClientRect();
+                    const startX = rect.left + rect.width / 2;
+                    const startY = rect.top + rect.height / 2;
+
+                    tempLine.setAttribute('x1', startX);
+                    tempLine.setAttribute('y1', startY);
+                    tempLine.setAttribute('x2', startX);
+                    tempLine.setAttribute('y2', startY);
+                    tempLine.style.display = 'block';
+                });
+            });
+
+            document.addEventListener('mousemove', function (e) {
+                if (isDragging && startDot) {
+                    tempLine.setAttribute('x2', e.clientX);
+                    tempLine.setAttribute('y2', e.clientY);
+                }
+            });
+
+            document.addEventListener('mouseup', function (e) {
+                if (isDragging && startDot) {
+                    tempLine.style.display = 'none';
+
+                    const endDot = document.elementFromPoint(e.clientX, e.clientY);
+
+                    if (endDot && endDot.classList.contains('circuit-dot') && endDot !== startDot) {
+                        const existingConnections = instance.getConnections({
+                            source: startDot.id,
+                            target: endDot.id
+                        });
+
+                        const reverseConnections = instance.getConnections({
+                            source: endDot.id,
+                            target: startDot.id
+                        });
+
+                        if (existingConnections.length === 0 && reverseConnections.length === 0) {
+                            // Create connection
+                            createConnection(startDot.id, endDot.id);
+                        }
+                    }
+
+                    startDot.classList.remove('active');
+                    startDot = null;
+                    isDragging = false;
+                }
+            });
+
+            function autoConnectAll() {
+                // Clear existing connections
+                instance.deleteEveryConnection();
+
+                // Clear any SVG paths
+                const tempLineSvg = document.getElementById('circuitTempLineSvg');
+                const paths = tempLineSvg.querySelectorAll('path');
+                paths.forEach(path => path.remove());
+
+                // Reset dot colors
+                document.querySelectorAll('.circuit-dot').forEach(dot => {
+                    dot.classList.remove('connected');
+                });
+
+                connectionCount = 0;
+
+                // Create ALL required connections including 5-10
+                requiredConnections.forEach((conn, index) => {
+                    setTimeout(() => {
+                        createConnection(conn[0], conn[1]);
+                    }, index * 100);
+                });
+
+                // Show success alert after all connections are made
+                setTimeout(() => {
+                    Swal.fire(`All ${requiredConnections.length} connections automatically created!`);
+
+                    // Send message that auto-connect is done
+                    window.dispatchEvent(new CustomEvent('circuitAutoConnected'));
+                }, requiredConnections.length * 100 + 300);
+            }
+
+            function checkConnections() {
+                const allConnections = instance.getConnections();
+                const userConnections = [];
+
+                allConnections.forEach(conn => {
+                    userConnections.push([conn.sourceId, conn.targetId]);
+                });
+
+                function connectionExists(connList, source, target) {
+                    return connList.some(conn =>
+                        (conn[0] === source && conn[1] === target) ||
+                        (conn[0] === target && conn[1] === source)
+                    );
+                }
+
+                let correctCount = 0;
+                let missingConnections = [];
+                let extraConnections = [];
+
+                // Check which required connections are present
+                requiredConnections.forEach(reqConn => {
+                    if (connectionExists(userConnections, reqConn[0], reqConn[1])) {
+                        correctCount++;
+                    } else {
+                        missingConnections.push(reqConn);
+                    }
+                });
+
+                // Check for extra connections
+                userConnections.forEach(userConn => {
+                    const isRequired = connectionExists(requiredConnections, userConn[0], userConn[1]);
+                    const isReverseRequired = connectionExists(requiredConnections, userConn[1], userConn[0]);
+
+                    if (!isRequired && !isReverseRequired) {
+                        extraConnections.push(userConn);
+                    }
+                });
+
+                const totalRequired = requiredConnections.length;
+                const score = Math.round((correctCount / totalRequired) * 100);
+                const allCorrect = (score === 100 && extraConnections.length === 0);
+
+                // Show alert with results
+                let alertMessage = "";
+
+                if (allCorrect) {
+                    alertMessage = `PERFECT!\nAll ${correctCount} required connections are correct!`;
+                } else if (score === 100 && extraConnections.length > 0) {
+                    alertMessage = `ALMOST PERFECT!\nAll required connections present but you have ${extraConnections.length} extra connections.`;
+                } else if (score >= 70) {
+                    alertMessage = `GOOD JOB!\n${correctCount} out of ${totalRequired} required connections are correct. Missing: ${missingConnections.length} connections`;
+                } else {
+                    alertMessage = `${correctCount} out of ${totalRequired} required connections are correct.\nMissing: ${missingConnections.length} connections`;
+                }
+
+                // Dispatch event with results
+                window.dispatchEvent(new CustomEvent('circuitConnectionCheckResult', {
+                    detail: {
+                        allCorrect: allCorrect,
+                        message: alertMessage,
+                        score: score,
+                        circuitParams: { resistance: resistance, bits: bits }
+                    }
+                }));
+
+                // Show alert to user
+                Swal.fire(alertMessage);
+            }
+
+            function clearAllConnections() {
+                instance.deleteEveryConnection();
+                connectionCount = 0;
+                const tempLineSvg = document.getElementById('circuitTempLineSvg');
+                const paths = tempLineSvg.querySelectorAll('path');
+                paths.forEach(path => path.remove());
+
+                document.querySelectorAll('.circuit-dot').forEach(dot => {
+                    dot.classList.remove('connected');
+                });
+            }
+
+            document.getElementById('circuitClearBtn').addEventListener('click', clearAllConnections);
+            document.getElementById('circuitCheckBtn').addEventListener('click', checkConnections);
+            document.getElementById('circuitAutoConnectBtn').addEventListener('click', autoConnectAll);
+
+            document.getElementById('circuitShowRequiredBtn').addEventListener('click', function () {
+                if (requiredConnectionsDiv.style.display === 'none' || requiredConnectionsDiv.style.display === '') {
+                    requiredConnectionsDiv.style.display = 'block';
+                    this.innerHTML = '<i class="fas fa-eye-slash"></i> Hide Required';
+                } else {
+                    requiredConnectionsDiv.style.display = 'none';
+                    this.innerHTML = '<i class="fas fa-list"></i> Show Required';
+                }
+            });
+
+            // Initialize circuit
+            window.addEventListener('load', function () {
+                const parent = document.querySelector('.circuit-parent');
+                parent.style.width = '980px';
+                parent.style.height = '600px';
+                parent.style.transform = 'scale(1)';
+            });
+
+            // Expose clearAllConnections for main reset
+            window.circuitClearAllConnections = clearAllConnections;
+        });
+    </script>
+</body>
+
+</html>

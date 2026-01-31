@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Dual Slope ADC Simulator</title>
+    <!-- jsPlumb -->
+    <script src="https://unpkg.com/jsplumb@2.15.6/dist/js/jsplumb.min.js"></script>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* Disable text selection and pointer events */
+        * {
+            user-select: none !important;
+            cursor: default !important;
+        }
+
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            pointer-events: none;
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding-top: 20px;
+            padding-bottom: 40px;
+            overflow-x: auto;
+            min-width: 1400px;
+        }
+
+        .container {
+            width: 1400px;
+            margin: 0 auto;
+            min-width: 1400px;
+        }
+
+        /* Re-enable pointer events for interactive elements */
+        button,
+        input,
+        .form-range,
+        .dot,
+        .control-btn,
+        .control-buttons,
+        .control-buttons *,
+        #startBtn,
+        #globalResetBtn,
+        #checkBtn,
+        #autoBtn,
+        #resetBtn,
+        #voltageSlider,
+        #bits,
+        #vref {
+            pointer-events: auto !important;
+            cursor: pointer !important;
+        }
+
+        /* Fixed layout */
+        .iframecontainer {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            height: 720px;
+            width: 100%;
+            min-width: 1400px;
+            flex-shrink: 0;
+        }
+
+        /* Circuit Simulator Container */
+        .circuit-simulator-container {
+            width: 980px;
+            height: 720px;
+            border: none;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            background: #cfcfcf;
+            flex-shrink: 0;
+        }
+
+        /* Sidebar Card */
+        .sidebar-card {
+            width: 400px;
+            flex-shrink: 0;
+            height: 720px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+
+        .card-header {
+            background-color: #0d6efd;
+            color: white;
+            font-weight: 600;
+            padding: 15px;
+        }
+
+        /* Header Section */
+        .header-section {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            padding: 10px 0px 0px 0px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            min-width: 100%;
+        }
+
+        /* Circuit Styles */
+        .circuit-container {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #cfcfcf;
+            font-family: Arial, sans-serif;
+            position: relative;
+        }
+
+        .parent {
+            width: 980px !important;
+            height: 600px !important;
+            padding: 30px 50px !important;
+            margin: 20px auto !important;
+            display: grid !important;
+            grid-template-columns: repeat(12, 1fr) !important;
+            grid-template-rows: repeat(9, 1fr) !important;
+            gap: 8px !important;
+            position: relative !important;
+            background-color: #e6e6e6 !important;
+            background-image:
+                linear-gradient(to right, #d0d0d0 1px, transparent 1px),
+                linear-gradient(to bottom, #d0d0d0 1px, transparent 1px) !important;
+            background-size: 20px 20px !important;
+            border: 1px solid #9a9a9a !important;
+            transform-origin: 0 0 !important;
+            transform: scale(1) !important;
+            min-width: 980px;
+        }
+
+        .parent>div {
+            background: #e6e6e6;
+            border: 1px solid #7f7f7f;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            width: fit-content;
+            height: fit-content;
+            justify-self: center;
+            align-self: center;
+        }
+
+        .parent img {
+            max-width: 120px;
+            max-height: 120px;
+            padding: 6px;
+            mix-blend-mode: multiply;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background: red;
+            border-radius: 50%;
+            position: absolute;
+            cursor: crosshair;
+            z-index: 10;
+        }
+
+        /* Grid Positions */
+        .div1 { grid-area: 1 / 1 / 2 / 2; }
+        .div2 { grid-area: 3 / 1 / 4 / 2; }
+        .div3 { grid-area: 2 / 3 / 5 / 5; }
+        .div4 { grid-area: 3 / 5 / 5 / 7; }
+        .div5 { grid-area: 4 / 4 / 7 / 5; }
+        .div6 { grid-area: 1 / 5 / 3 / 7; }
+        .div7 { grid-area: 4 / 7 / 7 / 8; }
+        .div8 { grid-area: 3 / 8 / 5 / 10; }
+        .div9 { grid-area: 7 / 6 / 9 / 9; }
+        .div10 { grid-area: 6 / 10 / 9 / 12; }
+        .div11 { grid-area: 7 / 3 / 9 / 5; }
+
+        /* Control Buttons */
+        .control-buttons {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            background: #e9ecef;
+            border-radius: 8px;
+            margin: 0 20px;
+            width: calc(100% - 40px);
+        }
+
+        .control-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            min-width: 180px;
+        }
+
+        .reset-btn { background: #f44336; color: white; }
+        .auto-btn { background: #4CAF50; color: white; }
+        .check-btn { background: #2196F3; color: white; }
+
+        .reset-btn:hover { background: #d32f2f; }
+        .auto-btn:hover { background: #388E3C; }
+        .check-btn:hover { background: #1976D2; }
+
+        /* Hide jsPlumb endpoints */
+        .jtk-endpoint {
+            display: none !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+        }
+
+        /* Temporary line */
+        #tempLine {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        #tempLine line {
+            stroke: red;
+            stroke-width: 3;
+        }
+
+        /* Connection Status */
+        .connection-status {
+            background-color: #f8f9fa;
+            border-left: 4px solid #6c757d;
+            padding: 10px;
+            margin-top: -15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            min-width: 100%;
+        }
+
+        .connection-status.connected {
+            border-left-color: #198754;
+            background-color: #d4edda;
+        }
+
+        .connection-status.disconnected {
+            border-left-color: #dc3545;
+            background-color: #f8d7da;
+        }
+
+        /* Instructions Button */
+        .instrucButton {
+            background-color: transparent;
+            color: white;
+            border: none;
+        }
+
+        .instrucButton:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Output Cards */
+        .output-value {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .status-ready { color: #6c757d; }
+        .status-converting { color: #ffc107; }
+        .status-complete { color: #198754; }
+
+        /* Canvas */
+        #adcCanvas {
+            width: 100%;
+            height: 400px;
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            min-width: 100%;
+        }
+
+        /* Legend */
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-right: 15px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 3px;
+            margin-right: 5px;
+        }
+
+        .legend-input { background-color: #198754; }
+        .legend-ramp { background-color: #0d6efd; }
+        .legend-deintegrate { background-color: #dc3545; }
+        
+        /* Integration Parameters Card */
+        .integration-params {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        
+        .param-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .param-label {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .param-value {
+            font-weight: bold;
+            color: #2196F3;
+        }
+        
+        /* Dual slope specific */
+        .phase-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .phase-integrate {
+            background-color: #0d6efd;
+        }
+        
+        .phase-deintegrate {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+
+<body oncontextmenu="return false;">
+    <div class="container">
+        <!-- Header -->
+        <div class="header-section">
+            <div class="row">
+                <div class="col-md-12">
+                    <h5>Dual Slope ADC Simulator</h5>
+                </div>
+            </div>
+        </div>
+
+        <div class="iframecontainer">
+            <!-- Circuit Simulator -->
+            <div class="circuit-simulator-container">
+                <div class="circuit-container">
+                    <div class="parent" id="workspace">
+                        <!-- VIN -->
+                        <div class="div1">
+                            <h5>-V<sub>in </sub>&nbsp;</h5>
+                            <div class="dot" id="dot1" style="right:-6px; top:50%"></div>
+                        </div>
+
+                        <!-- VREF -->
+                        <div class="div2">
+                            <h5>V<sub>ref </sub>&nbsp;</h5>
+                            <div class="dot" id="dot2" style="right:-6px; top:50%"></div>
+                        </div>
+
+                        <!-- RESISTOR -->
+                        <div class="div3">
+                            <img src="./imagess/resistor.png">
+                            <div class="dot" id="dot3" style="left:-6px; top:50%"></div>
+                            <div class="dot" id="dot4" style="right:-6px; top:50%"></div>
+                        </div>
+
+                        <!-- COMPARATOR -->
+                        <div class="div4">
+                            <img src="./imagess/camparator.png">
+                            <div class="dot" id="dot5" style="left:-6px; top:30%"></div>
+                            <div class="dot" id="dot6" style="left:-6px; top:70%"></div>
+                            <div class="dot" id="dot7" style="right:-6px; top:50%"></div>
+                        </div>
+
+                        <!-- GROUND -->
+                        <div class="div5">
+                            <img src="./imagess/ground.png">
+                            <div class="dot" id="dot38" style="top:-6px; left:50%"></div>
+                        </div>
+
+                        <!-- CAPACITOR -->
+                        <div class="div6">
+                            <img src="./imagess/capacitor.png">
+                            <div class="dot" id="dot39" style="left:-6px; top:50%"></div>
+                            <div class="dot" id="dot40" style="right:-6px; top:50%"></div>
+                        </div>
+
+                        <!-- GROUND -->
+                        <div class="div7">
+                            <img src="./imagess/ground.png">
+                            <div class="dot" id="dot9_ground" style="top:-6px; left:50%"></div>
+                        </div>
+
+                        <!-- INTEGRATOR -->
+                        <div class="div8">
+                            <img src="./imagess/camparator.png">
+                            <div class="dot" id="dot8" style="left:-6px; top:30%"></div>
+                            <div class="dot" id="dot9" style="left:-6px; top:70%"></div>
+                            <div class="dot" id="dot10" style="right:-6px; top:50%"></div>
+                        </div>
+
+                        <!-- CONTROL UNIT -->
+                        <div class="div9">
+                            <img src="./imagess/control.png">
+                            <div class="dot" id="dot26" style="left:-6px; top:30%"></div>
+                            <div class="dot" id="dot41" style="left:-6px; top:70%"></div>
+                            <div class="dot" id="dot42" style="right:-6px; top:30%"></div>
+                            <div class="dot" id="dot43" style="right:-6px; top:70%"></div>
+                        </div>
+
+                        <!-- COUNTER -->
+                        <div class="div10">
+                            <img src="./imagess/counter.png">
+                            <div class="dot" id="dot12" style="left:-6px; top:40%"></div>
+                        </div>
+
+                        <!-- CLOCK -->
+                        <div class="div11">
+                            <img src="./imagess/clock.png">
+                            <div class="dot" id="dot11" style="bottom:-6px; left:50%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Control Buttons -->
+                    <div class="control-buttons">
+                        <button class="control-btn check-btn" id="checkBtn">
+                            Check Connections
+                        </button>
+                        <button class="control-btn auto-btn" id="autoBtn">
+                            Auto-Connect
+                        </button>
+                        <button class="control-btn reset-btn" id="resetBtn">
+                            Clear Connections
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Temporary SVG Line -->
+                <svg id="tempLine">
+                    <line id="tempLineElement" x1="0" y1="0" x2="0" y2="0" style="display: none;" />
+                </svg>
+            </div>
+
+            <!-- Sidebar Card -->
+            <div class="card sidebar-card" style="width: 377px;">
+                <div class="card-header" style="display: flex; justify-content: space-between;">
+                    <div>ADC Parameters</div>
+                    <div>
+                        <button class="instrucButton" title="Show Instructions">
+                            
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Connection Status -->
+                    <div id="connectionStatus" class="connection-status">
+                        
+                        <span id="connectionStatusText">All connections must be correct before running simulation</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="bits" class="form-label">Number of Bits</label>
+                        <input type="number" class="form-control" id="bits" min="1" max="16" value="8">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="vref" class="form-label">Reference Voltage (V<sub>REF</sub>)</label>
+                        <input type="number" class="form-control" id="vref" min="1" max="24" step="0.1" value="5">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="voltageSlider" class="form-label">Input Voltage: <span id="voltageValue">2.500</span> V</label>
+                        <input type="range" class="form-range" id="voltageSlider" min="0" max="5" step="0.0001" value="2.5">
+                        <div class="d-flex justify-content-between">
+                            <small>0V</small>
+                            <small id="maxVoltageLabel">5V</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Integration Parameters -->
+                    <div class="integration-params">
+                        <div class="param-row">
+                            <span class="param-label">T1 (Integrate):</span>
+                            <span class="param-value" id="integrationTime">20 ms</span>
+                        </div>
+                        <div class="param-row">
+                            <span class="param-label">Max Digital Value:</span>
+                            <span class="param-value" id="maxDigitalValuePreview">255</span>
+                        </div>
+                        <div class="param-row">
+                            <span class="param-label">Step Size:</span>
+                            <span class="param-value" id="stepSizePreview">19.61 mV</span>
+                        </div>
+                        <div class="param-row">
+                            <span class="param-label">Peak Voltage:</span>
+                            <span class="param-value" id="peakVoltagePreview">0.000 V</span>
+                        </div>
+                    </div>
+
+                    <br><br>
+                    <div class="btn-group-responsive">
+                        <button id="startBtn" class="btn btn-success mb-2">
+                              Run Simulation
+                        </button>
+                        <button id="globalResetBtn" class="btn btn-danger mb-2">
+                             Reset All
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visualization Section -->
+        <div id="visualizationSection">
+            <!-- Conversion Visualization Card -->
+            <div class="card conversion-card">
+                <div class="card-header">
+                     Dual Slope ADC Graph
+                </div>
+                <div class="card-body">
+                    <div class="position-relative">
+                        <canvas id="adcCanvas"></canvas>
+                        <div class="position-absolute top-0 end-0 mt-3 me-3">
+                            <div class="d-flex bg-white p-2 rounded shadow-sm">
+                                <div class="legend-item">
+                                    <div class="legend-color legend-input"></div>
+                                    <small>Input Voltage</small>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color legend-ramp"></div>
+                                    <small>Integration Phase</small>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color legend-deintegrate"></div>
+                                    <small>Deintegration Phase</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-md-3 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <div class="text-muted small">Counter Value</div>
+                                    <div class="h4" id="counterDisplay">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3" style="display: none;">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <div class="text-muted small">Ramp Voltage</div>
+                                    <div class="h4" id="rampVoltageDisplay">0.000 V</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <div class="text-muted small">T2 Time</div>
+                                    <div class="h4" id="t2TimeDisplay">0.00 ms</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <div class="text-muted small">Status</div>
+                                    <div class="h4 status-ready" id="statusDisplay">Ready</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Digital Output Card -->
+            <div class="card digital-output-card">
+                <div class="card-header">
+                    Digital Output
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-primary">
+                                <div class="card-body text-center">
+                                    <div class="text-muted">Decimal</div>
+                                    <div class="output-value text-primary" id="decimalOutput">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-success">
+                                <div class="card-body text-center">
+                                    <div class="text-muted">Binary</div>
+                                    <div class="output-value text-success" id="binaryOutput">00000000</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <div class="text-muted small">Resolution</div>
+                                    <div style="display: flex;justify-content: center;">
+                                        <div class="h5" id="resolutionDisplay">8</div>
+                                        <div style="padding: 3px 0px 0px 0px;" class="text-muted small">&nbsp;<strong>bits</strong> </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <div class="text-muted small">V<sub>REF</sub></div>
+                                    <div style="display: flex;justify-content: center;">
+                                        <div class="h5" id="vrefDisplay">5.0</div>
+                                        <div style="padding: 3px 0px 0px 0px;" class="text-muted small">&nbsp;<strong>V</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <div class="text-muted small">Step Size</div>
+                                    <div style="display: flex;justify-content: center;">
+                                        <div class="h5" id="stepSizeDisplay">19.61</div>
+                                        <div style="padding: 3px 0px 0px 0px;" class="text-muted small">&nbsp;<strong>mV</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3 mb-3">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <div class="text-muted small">Vin/Vref Ratio</div>
+                                    <div class="h5" id="t1t2RatioDisplay">0.50</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Global variables
+        let areConnectionsCorrect = false;
+        let isSimulationRunning = false;
+        let counter = 0;
+        let rampVoltage = 0;
+        let digitalOutput = 0;
+        let intervalId = null;
+        let VREF = 5.0;
+        let bits = 8;
+        let MAX_COUNT = 255;
+        let STEP_SIZE = 0.0196;
+        let inputVoltage = 2.5;
+        const T1_TIME = 20; // Fixed 20ms integration time (T1)
+        let t2Time = 0; // Deintegration time (T2) calculated from formula
+        let peakVoltage = 0;
+        let currentPhase = 'idle'; // 'idle', 'integrating', 'deintegrating', 'complete'
+        let integrationProgress = 0;
+        let deintegrationProgress = 0;
+        let simulationStartTime = 0;
+        let simulationSpeed = 10; // Speed multiplier for simulation
+
+        // DOM Elements
+        const voltageSlider = document.getElementById('voltageSlider');
+        const voltageValue = document.getElementById('voltageValue');
+        const maxVoltageLabel = document.getElementById('maxVoltageLabel');
+        const startBtn = document.getElementById('startBtn');
+        const globalResetBtn = document.getElementById('globalResetBtn');
+        const bitsInput = document.getElementById('bits');
+        const vrefInput = document.getElementById('vref');
+        const counterDisplay = document.getElementById('counterDisplay');
+        const rampVoltageDisplay = document.getElementById('rampVoltageDisplay');
+        const t2TimeDisplay = document.getElementById('t2TimeDisplay');
+        const statusDisplay = document.getElementById('statusDisplay');
+        const decimalOutput = document.getElementById('decimalOutput');
+        const binaryOutput = document.getElementById('binaryOutput');
+        const resolutionDisplay = document.getElementById('resolutionDisplay');
+        const vrefDisplay = document.getElementById('vrefDisplay');
+        const stepSizeDisplay = document.getElementById('stepSizeDisplay');
+        const t1t2RatioDisplay = document.getElementById('t1t2RatioDisplay');
+        const canvas = document.getElementById('adcCanvas');
+        const ctx = canvas.getContext('2d');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const connectionStatusText = document.getElementById('connectionStatusText');
+        const visualizationSection = document.getElementById('visualizationSection');
+        const integrationTimeEl = document.getElementById('integrationTime');
+        const maxDigitalValuePreview = document.getElementById('maxDigitalValuePreview');
+        const stepSizePreview = document.getElementById('stepSizePreview');
+        const peakVoltagePreview = document.getElementById('peakVoltagePreview');
+
+        // Initialize canvas size
+        function initCanvas() {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = 400;
+        }
+
+        // Update parameters
+        function updateParameters() {
+            bits = parseInt(bitsInput.value) || 8;
+            VREF = parseFloat(vrefInput.value) || 5;
+            inputVoltage = parseFloat(voltageSlider.value) || 2.5;
+
+            MAX_COUNT = Math.pow(2, bits) - 1;
+            STEP_SIZE = VREF / MAX_COUNT;
+            
+            // Calculate T2 time using dual slope formula: T2 = (Vin * T1) / Vref
+            t2Time = (inputVoltage * T1_TIME) / VREF;
+            
+            // Calculate peak voltage (maximum voltage reached at end of T1)
+            peakVoltage = inputVoltage;
+            
+            // Update displays
+            updateVoltageSlider();
+            updatePreviews();
+            updateDisplays();
+            drawGraph();
+        }
+
+        // Update voltage slider based on VREF
+        function updateVoltageSlider() {
+            voltageSlider.max = VREF;
+            voltageSlider.step = STEP_SIZE;
+            maxVoltageLabel.textContent = VREF.toFixed(1) + 'V';
+
+            // Adjust input voltage if needed
+            if (inputVoltage > VREF) {
+                inputVoltage = VREF;
+                voltageSlider.value = inputVoltage;
+            }
+            voltageValue.textContent = inputVoltage.toFixed(3);
+        }
+
+        // Update preview parameters
+        function updatePreviews() {
+            maxDigitalValuePreview.textContent = MAX_COUNT;
+            stepSizePreview.textContent = (STEP_SIZE * 1000).toFixed(2) + ' mV';
+            peakVoltagePreview.textContent = peakVoltage.toFixed(3) + ' V';
+        }
+
+        // Update all displays
+        function updateDisplays() {
+            resolutionDisplay.textContent = bits;
+            vrefDisplay.textContent = VREF.toFixed(1);
+            stepSizeDisplay.textContent = (STEP_SIZE * 1000).toFixed(2);
+            
+            // Update Vin/Vref ratio
+            t1t2RatioDisplay.textContent = (inputVoltage / VREF).toFixed(2);
+
+            counterDisplay.textContent = counter;
+            rampVoltageDisplay.textContent = rampVoltage.toFixed(3) + ' V';
+            t2TimeDisplay.textContent = t2Time.toFixed(2) + ' ms';
+            
+            updateOutput();
+        }
+
+        // Update digital output displays - CORRECTED
+        function updateOutput() {
+            if (currentPhase === 'idle') {
+                // Reset state
+                decimalOutput.textContent = '0';
+                binaryOutput.textContent = '0'.repeat(bits);
+            } else if (currentPhase === 'integrating') {
+                // During T1, show 0 (counter doesn't count during integration)
+                decimalOutput.textContent = '0';
+                binaryOutput.textContent = '0'.repeat(bits);
+            } else if (currentPhase === 'deintegrating') {
+                // During T2, show the actual count
+                const binaryCount = counter.toString(2).padStart(bits, '0');
+                decimalOutput.textContent = counter;
+                binaryOutput.textContent = binaryCount;
+            } else if (currentPhase === 'complete') {
+                // Final output
+                decimalOutput.textContent = digitalOutput;
+                binaryOutput.textContent = digitalOutput.toString(2).padStart(bits, '0');
+            }
+        }
+
+        // Update connection status
+        function updateConnectionStatus(isCorrect = false, message = "") {
+            areConnectionsCorrect = isCorrect;
+
+            if (isCorrect) {
+                connectionStatus.className = 'connection-status connected';
+                connectionStatusText.innerHTML = ` ${message || "All connections are correct! Simulation ready."}`;
+                
+                // Enable start button
+                startBtn.disabled = false;
+                startBtn.className = 'btn btn-success mb-2';
+                startBtn.innerHTML = 'Run Simulation';
+                
+                // Show success alert
+                Swal.fire({
+                    icon: 'success',
+                    title: 'CONNECTIONS CORRECT!',
+                    text: 'You can now run the simulation.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            } else {
+                connectionStatus.className = 'connection-status disconnected';
+                connectionStatusText.innerHTML = ` ${message || "All connections must be correct before running simulation"}`;
+                
+                // Disable start button
+                startBtn.disabled = true;
+                startBtn.className = 'btn btn-secondary mb-2';
+            }
+        }
+
+        // Reset simulation state
+        function resetSimulation() {
+            if (intervalId) {
+                clearInterval(intervalId);
+                intervalId = null;
+            }
+            
+            counter = 0;
+            rampVoltage = 0;
+            digitalOutput = 0;
+            integrationProgress = 0;
+            deintegrationProgress = 0;
+            isSimulationRunning = false;
+            currentPhase = 'idle';
+            
+            statusDisplay.textContent = 'Ready';
+            statusDisplay.className = 'h4 status-ready';
+            
+            updateDisplays();
+            drawGraph();
+            
+            // Re-enable start button if connections are correct
+            if (areConnectionsCorrect) {
+                startBtn.disabled = false;
+                startBtn.className = 'btn btn-success mb-2';
+                startBtn.innerHTML = 'Run Simulation';
+            }
+        }
+
+        // Start dual slope ADC simulation
+        function startSimulation() {
+            if (!areConnectionsCorrect) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Incomplete Connections',
+                    text: 'Please complete all connections correctly before running simulation!'
+                });
+                return;
+            }
+            
+            if (isSimulationRunning) return;
+            
+            resetSimulation();
+            isSimulationRunning = true;
+            currentPhase = 'integrating';
+            simulationStartTime = Date.now();
+            
+            startBtn.disabled = true;
+            startBtn.innerHTML = 'Integrating...';
+            
+            statusDisplay.textContent = 'Integrating (T1)';
+            statusDisplay.className = 'h4 status-converting';
+            
+            // Calculate T2 time using dual slope formula
+            t2Time = (inputVoltage * T1_TIME) / VREF;
+            
+            // Start simulation loop (60fps)
+            const simulationInterval = 16; // ~60fps
+            intervalId = setInterval(updateSimulation, simulationInterval);
+        }
+
+        // Update simulation state - FIXED BINARY CONVERSION
+        function updateSimulation() {
+            const elapsedTime = (Date.now() - simulationStartTime) * simulationSpeed;
+            
+            if (currentPhase === 'integrating') {
+                // Phase 1: Integration with Vin for T1_TIME (20ms)
+                integrationProgress = Math.min(elapsedTime / T1_TIME, 1);
+                rampVoltage = inputVoltage * integrationProgress;
+                counter = 0; // Counter doesn't count during T1
+                
+                updateDisplays();
+                drawGraph();
+                
+                if (integrationProgress >= 1) {
+                    // Switch to deintegration phase
+                    currentPhase = 'deintegrating';
+                    simulationStartTime = Date.now();
+                    startBtn.innerHTML = 'Deintegrating...';
+                    statusDisplay.textContent = 'Deintegrating (T2)';
+                }
+            } else if (currentPhase === 'deintegrating') {
+                // Phase 2: Deintegration with -Vref for T2 time
+                const deintegrationElapsed = (Date.now() - simulationStartTime) * simulationSpeed;
+                deintegrationProgress = Math.min(deintegrationElapsed / t2Time, 1);
+                
+                // Calculate ramp voltage: starts at peak and goes down to 0
+                rampVoltage = inputVoltage * (1 - deintegrationProgress);
+                
+                // Counter counts during T2 only
+                // For dual slope ADC: counter should count up to (Vin/Vref) * MAX_COUNT
+                const expectedCount = Math.floor((inputVoltage / VREF) * MAX_COUNT);
+                counter = Math.round(deintegrationProgress * expectedCount);
+                
+                updateDisplays();
+                drawGraph();
+                
+                if (deintegrationProgress >= 1 || rampVoltage <= 0) {
+                    // Simulation complete
+                    clearInterval(intervalId);
+                    isSimulationRunning = false;
+                    currentPhase = 'complete';
+                    
+                    // Final digital output based on dual slope formula
+                    // Digital output = (Vin/Vref) * MAX_COUNT
+                    digitalOutput = Math.floor((inputVoltage / VREF) * MAX_COUNT);
+                    
+                    startBtn.disabled = false;
+                    startBtn.innerHTML = 'Run Again';
+                    
+                    statusDisplay.textContent = 'Complete';
+                    statusDisplay.className = 'h4 status-complete';
+                    
+                    updateOutput();
+                    
+                    // Show completion message with correct calculation
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Dual Slope Conversion Complete!',
+                        html: `Analog Input: ${inputVoltage.toFixed(3)}V<br>
+                               Vref: ${VREF}V<br>
+                               T1 (Integrate): ${T1_TIME} ms<br>
+                               T2 (Deintegrate): ${t2Time.toFixed(2)} ms<br>
+                               T2/T1 Ratio: ${(t2Time/T1_TIME).toFixed(3)}<br>
+                               Vin/Vref Ratio: ${(inputVoltage/VREF).toFixed(3)}<br>
+                               Digital Output: ${digitalOutput}<br>
+                               Binary: ${digitalOutput.toString(2).padStart(bits, '0')}<br><br>
+                               <small>Formula: N = (Vin/Vref) × (2ⁿ - 1) = ${(inputVoltage/VREF).toFixed(3)} × ${MAX_COUNT} = ${digitalOutput}</small>`,
+                        timer: 4000,
+                        showConfirmButton: true
+                    });
+                }
+            }
+        }
+
+        // Complete reset function
+        function resetEverything() {
+            // 1. Stop any ongoing simulation
+            if (intervalId) {
+                clearInterval(intervalId);
+                intervalId = null;
+            }
+            
+            // 2. Reset simulation state
+            resetSimulation();
+            
+            // 3. Clear circuit connections
+            try {
+                if (typeof instance !== 'undefined') {
+                    instance.deleteEveryConnection();
+                }
+            } catch (error) {
+                console.log("Circuit reset error:", error);
+            }
+            
+            // 4. Reset ADC parameters to defaults
+            bitsInput.value = 8;
+            vrefInput.value = 5;
+            voltageSlider.value = 2.5;
+            
+            // 5. Reset connection status
+            areConnectionsCorrect = false;
+            updateConnectionStatus(false, "All connections must be correct before running simulation");
+            
+            // 6. Update parameters
+            updateParameters();
+            
+            // 7. Show reset confirmation
+            Swal.fire({
+                icon: 'info',
+                title: 'System Reset',
+                text: 'All settings and connections have been reset to default values.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+
+        // Draw dual slope ADC graph
+        function drawGraph() {
+            const width = canvas.width;
+            const height = canvas.height;
+            const padding = 60;
+            const graphWidth = width - 2 * padding;
+            const graphHeight = height - 2 * padding;
+
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+
+            // Draw background grid
+            drawGrid(padding, graphWidth, graphHeight);
+
+            // Draw axes
+            ctx.strokeStyle = '#6c757d';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.stroke();
+
+            // Draw Y-axis labels (Voltage)
+            // ctx.fillStyle = '#6c757d';
+            // ctx.font = '12px Arial';
+            // ctx.textAlign = 'right';
+
+            // const ySteps = 5;
+            // for (let i = 0; i <= ySteps; i++) {
+            //     const voltage = (i / ySteps) * VREF;
+            //     const y = height - padding - (i / ySteps) * graphHeight;
+            //     ctx.fillText(voltage.toFixed(1) + 'V', padding - 10, y + 4);
+            // }
+
+            // Draw X-axis labels (Time)
+            ctx.textAlign = 'center';
+            const totalTimeDisplay = Math.max(T1_TIME + t2Time, 40); // Minimum 40ms for display
+            
+            // Draw time markers
+            for (let i = 0; i <= 4; i++) {
+                const time = (i / 4) * totalTimeDisplay;
+                const x = padding + (i / 4) * graphWidth;
+                ctx.fillText(time.toFixed(0) + 'ms', x, height - padding + 20);
+            }
+
+            // Draw T1 marker
+            const t1X = padding + (T1_TIME / totalTimeDisplay) * graphWidth;
+            
+            // Draw T1/T2 separation line
+            if (t2Time > 0) {
+                ctx.strokeStyle = '#6c757d';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([3, 3]);
+                ctx.beginPath();
+                ctx.moveTo(t1X, padding);
+                ctx.lineTo(t1X, height - padding);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // Label T1/T2 regions
+                ctx.fillStyle = '#6c757d';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('T1 (Integrate)', padding + (T1_TIME / totalTimeDisplay / 2) * graphWidth, height - padding + 35);
+                ctx.fillText('T2 (Deintegrate)', padding + (T1_TIME + t2Time/2) / totalTimeDisplay * graphWidth, height - padding + 35);
+            }
+
+            // Draw input voltage reference line
+            const inputY = height - padding - (inputVoltage / VREF) * graphHeight;
+            ctx.strokeStyle = '#198754';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(padding, inputY);
+            ctx.lineTo(width - padding, inputY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Draw dual slope waveform
+            const t1XPos = padding + (T1_TIME / totalTimeDisplay) * graphWidth;
+            const totalXPos = padding + ((T1_TIME + t2Time) / totalTimeDisplay) * graphWidth;
+            
+            // Draw integration phase (T1)
+            ctx.strokeStyle = '#0d6efd';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(padding, height - padding);
+            
+            let currentX = t1XPos;
+            let currentY = height - padding - (inputVoltage / VREF) * graphHeight;
+            
+            if (currentPhase === 'integrating') {
+                // During integration, show partial line
+                currentX = padding + (T1_TIME * integrationProgress / totalTimeDisplay) * graphWidth;
+                currentY = height - padding - (inputVoltage * integrationProgress / VREF) * graphHeight;
+            }
+            
+            ctx.lineTo(currentX, currentY);
+            ctx.stroke();
+            
+            // Draw integration phase point if active
+            if (currentPhase === 'integrating' || currentPhase === 'deintegrating' || currentPhase === 'complete') {
+                ctx.fillStyle = '#0d6efd';
+                ctx.beginPath();
+                ctx.arc(currentX, currentY, 6, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+            
+            // Draw deintegration phase (T2) - from peak to zero
+            if (t2Time > 0 && (currentPhase === 'deintegrating' || currentPhase === 'complete')) {
+                let deintegrationX = totalXPos;
+                let deintegrationY = height - padding;
+                
+                if (currentPhase === 'deintegrating') {
+                    // During deintegration, show partial line
+                    deintegrationX = t1XPos + (t2Time * deintegrationProgress / totalTimeDisplay) * graphWidth;
+                    deintegrationY = height - padding - (inputVoltage * (1 - deintegrationProgress) / VREF) * graphHeight;
+                }
+                
+                ctx.strokeStyle = '#dc3545';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(t1XPos, height - padding - (inputVoltage / VREF) * graphHeight);
+                ctx.lineTo(deintegrationX, deintegrationY);
+                ctx.stroke();
+                
+                // Draw deintegration phase point
+                ctx.fillStyle = '#dc3545';
+                ctx.beginPath();
+                ctx.arc(deintegrationX, deintegrationY, 6, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+
+            // Draw titles
+            ctx.fillStyle = '#212529';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Time (ms)', width / 2, height - 15);
+
+            ctx.save();
+            ctx.translate(20, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('Integrator Output (V)', 0, 0);
+            ctx.restore();
+        }
+
+        // Draw grid
+        function drawGrid(padding, graphWidth, graphHeight) {
+            ctx.strokeStyle = '#e9ecef';
+            ctx.lineWidth = 1;
+
+            // Vertical grid lines
+            for (let i = 0; i <= 10; i++) {
+                const x = padding + (i / 10) * graphWidth;
+                ctx.beginPath();
+                ctx.moveTo(x, padding);
+                ctx.lineTo(x, padding + graphHeight);
+                ctx.stroke();
+            }
+
+            // Horizontal grid lines
+            for (let i = 0; i <= 10; i++) {
+                const y = padding + (i / 10) * graphHeight;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(padding + graphWidth, y);
+                ctx.stroke();
+            }
+        }
+
+        // Circuit Simulator Code
+        jsPlumb.ready(function () {
+            const instance = jsPlumb.getInstance({
+                Container: "workspace",
+                Connector: ["Bezier", { curviness: 60 }],
+                PaintStyle: {
+                    stroke: "red",
+                    strokeWidth: 3
+                },
+                HoverPaintStyle: {
+                    stroke: "#ff4444",
+                    strokeWidth: 4
+                },
+                Endpoint: ["Blank", {}],
+                ConnectionOverlays: []
+            });
+
+            const requiredConnections = [
+                ['dot1', 'dot3'],
+                ['dot2', 'dot3'],
+                ['dot4', 'dot5'],
+                ['dot6', 'dot38'],
+                ['dot39', 'dot5'],
+                ['dot7', 'dot40'],
+                ['dot9_ground', 'dot9'],
+                ['dot42', 'dot10'],
+                ['dot11', 'dot41'],
+                ['dot26', 'dot2'],
+                ['dot43', 'dot12'],
+                ['dot7', 'dot8']
+            ];
+
+            let isDragging = false;
+            let startDot = null;
+            const tempLine = document.getElementById('tempLineElement');
+            const tempLineSvg = document.getElementById('tempLine');
+
+            document.querySelectorAll('.dot').forEach(dot => {
+                dot.addEventListener('mousedown', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    isDragging = true;
+                    startDot = this;
+
+                    const rect = startDot.getBoundingClientRect();
+                    const startX = rect.left + rect.width / 2;
+                    const startY = rect.top + rect.height / 2;
+
+                    tempLine.setAttribute('x1', startX);
+                    tempLine.setAttribute('y1', startY);
+                    tempLine.setAttribute('x2', startX);
+                    tempLine.setAttribute('y2', startY);
+                    tempLine.style.display = 'block';
+                    document.body.style.cursor = 'crosshair';
+                });
+            });
+
+            document.addEventListener('mousemove', function (e) {
+                if (isDragging && startDot) {
+                    tempLine.setAttribute('x2', e.clientX);
+                    tempLine.setAttribute('y2', e.clientY);
+                }
+            });
+
+            document.addEventListener('mouseup', function (e) {
+                if (isDragging && startDot) {
+                    tempLine.style.display = 'none';
+                    const endDot = document.elementFromPoint(e.clientX, e.clientY);
+
+                    if (endDot && endDot.classList.contains('dot') && endDot !== startDot) {
+                        const existingConnections = instance.getConnections({
+                            source: startDot.id,
+                            target: endDot.id
+                        });
+
+                        const reverseConnections = instance.getConnections({
+                            source: endDot.id,
+                            target: startDot.id
+                        });
+
+                        if (existingConnections.length === 0 && reverseConnections.length === 0) {
+                            instance.connect({
+                                source: startDot,
+                                target: endDot,
+                                anchors: ["Center", "Center"],
+                                connector: ["Bezier", { curviness: 60 }],
+                                paintStyle: {
+                                    stroke: "red",
+                                    strokeWidth: 3
+                                }
+                            });
+                        }
+                    }
+
+                    startDot = null;
+                    isDragging = false;
+                    document.body.style.cursor = 'default';
+                }
+            });
+
+            instance.setDraggable(document.querySelectorAll(".parent > div"), false);
+
+            // Clear Connections button
+            document.getElementById('resetBtn').addEventListener('click', function () {
+                instance.deleteEveryConnection();
+                updateConnectionStatus(false, "All connections cleared");
+            });
+
+            // Auto-Connect button
+            document.getElementById('autoBtn').addEventListener('click', function () {
+                instance.deleteEveryConnection();
+
+                requiredConnections.forEach(([sourceId, targetId], index) => {
+                    setTimeout(() => {
+                        const source = document.getElementById(sourceId);
+                        const target = document.getElementById(targetId);
+
+                        if (source && target) {
+                            const existingConnections = instance.getConnections({
+                                source: sourceId,
+                                target: targetId
+                            });
+
+                            const reverseConnections = instance.getConnections({
+                                source: targetId,
+                                target: sourceId
+                            });
+
+                            if (existingConnections.length === 0 && reverseConnections.length === 0) {
+                                instance.connect({
+                                    source: source,
+                                    target: target,
+                                    anchors: ["Center", "Center"],
+                                    connector: ["Bezier", { curviness: 60 }],
+                                    paintStyle: {
+                                        stroke: "red",
+                                        strokeWidth: 3
+                                    }
+                                });
+                            }
+                        }
+                    }, index * 100);
+                });
+
+                setTimeout(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Auto-Connect Complete',
+                        text: 'All 12 required connections have been created!',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    
+                    // Automatically check connections after auto-connect
+                    setTimeout(() => {
+                        document.getElementById('checkBtn').click();
+                    }, 500);
+                }, requiredConnections.length * 100 + 300);
+            });
+
+            // Check Connections button
+            document.getElementById('checkBtn').addEventListener('click', function () {
+                const allConnections = instance.getConnections();
+                const userConnections = [];
+
+                allConnections.forEach(conn => {
+                    userConnections.push([conn.sourceId, conn.targetId]);
+                });
+
+                let correct = 0;
+                let missing = [];
+
+                requiredConnections.forEach(req => {
+                    const found = userConnections.some(conn =>
+                        (conn[0] === req[0] && conn[1] === req[1]) ||
+                        (conn[0] === req[1] && conn[1] === req[0])
+                    );
+
+                    if (found) {
+                        correct++;
+                    } else {
+                        missing.push(req);
+                    }
+                });
+
+                const totalRequired = requiredConnections.length;
+
+                if (correct === totalRequired && userConnections.length === totalRequired) {
+                    updateConnectionStatus(true, `Perfect! All ${correct} required connections are correct!`);
+                } else if (correct === totalRequired && userConnections.length > totalRequired) {
+                    updateConnectionStatus(false, `Almost perfect! All required connections present but you have ${userConnections.length - totalRequired} extra connection(s).`);
+                } else {
+                    updateConnectionStatus(false, `${correct} out of ${totalRequired} required connections are correct. Missing: ${missing.length} connections`);
+
+                    // Highlight missing connections
+                    missing.forEach(([sourceId, targetId]) => {
+                        const source = document.getElementById(sourceId);
+                        const target = document.getElementById(targetId);
+                        if (source) source.style.boxShadow = '0 0 10px red';
+                        if (target) target.style.boxShadow = '0 0 10px red';
+                    });
+
+                    setTimeout(() => {
+                        document.querySelectorAll('.dot').forEach(dot => {
+                            dot.style.boxShadow = 'none';
+                        });
+                    }, 3000);
+                }
+            });
+
+            instance.bind("ready", function () {
+                console.log("jsPlumb initialized successfully");
+                instance.setSuspendDrawing(false);
+            });
+        });
+
+        // Event Listeners
+        voltageSlider.addEventListener('input', (e) => {
+            inputVoltage = parseFloat(e.target.value);
+            voltageValue.textContent = inputVoltage.toFixed(3);
+            updateParameters();
+        });
+
+        bitsInput.addEventListener('input', updateParameters);
+        vrefInput.addEventListener('input', updateParameters);
+        
+        startBtn.addEventListener('click', startSimulation);
+        globalResetBtn.addEventListener('click', resetEverything);
+
+        // Disable text selection and right-click
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+            return false;
+        });
+
+        document.addEventListener('selectstart', function (e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Disable keyboard shortcuts
+        document.addEventListener('keydown', function (e) {
+            if (e.ctrlKey && (e.key === 'c' || e.key === 'C' ||
+                e.key === 'x' || e.key === 'X' ||
+                e.key === 'v' || e.key === 'V' ||
+                e.key === 'a' || e.key === 'A' ||
+                e.key === 'u' || e.key === 'U' ||
+                e.key === 'p' || e.key === 'P' ||
+                e.key === 's' || e.key === 'S')) {
+                e.preventDefault();
+                return false;
+            }
+
+            if (e.key === 'F12') {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Initialize
+        window.addEventListener('load', function () {
+            initCanvas();
+            updateParameters();
+            drawGraph();
+        });
+
+        window.addEventListener('resize', () => {
+            initCanvas();
+            drawGraph();
+        });
+    </script>
+</body>
+</html>

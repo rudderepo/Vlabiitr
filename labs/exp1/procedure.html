@@ -1,0 +1,296 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title> Virtual Labs </title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="../../bootstrap/css/bootstrap.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="../../dist/css/AdminLTE.css">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">
+
+    <script>
+        window.onload = function () {
+            document.getElementById("procedure").className = "active treeview";
+        }
+    </script>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+    <!--Navigation Bar-->
+    <div class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-ex-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="http://iitb.ac.in"><span><img src="images/iitrLogo.png"
+                            style="margin-top:-15px;height:50px;width: 400px;"></span></a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-ex-collapse">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="wrapper">
+        <header class="main-header">
+            <!-- Logo -->
+            <a href="../index.html" class="logo"
+                style="background-color:#009dff; border-right:solid;border-right-color: #1261A0;">
+                <p align="center" style="font-size:1em;"><b>ADC Circuit Simulators Lab</b></p>
+            </a>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top" style="background-color:#009dff;">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button" id="toggle_nav">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+                <section class="content-header">
+                    <ol class="breadcrumb">
+                        <li>
+                            <a href="../index.html"><i class="fa fa-dashboard"></i>ADC Circuits</a>
+                        </li>
+                        <li>
+                            <a href="#">Analog to Digital Converters</a>
+                        </li>
+                        <li class="active">Procedure</li>
+                    </ol>
+                </section>
+            </nav>
+        </header>
+
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="main-sidebar" style="background-color:#1261A0;">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+                <!-- search form -->
+                <form action="#" method="get" class="sidebar-form">
+                    <div class="input-group"></div>
+                </form>
+                <!-- sidebar menu: : style can be found in sidebar.less -->
+                <ul class="sidebar-menu" style="background-color:#1261A0;">
+                    <li class="treeview" id="aim">
+                        <a href="index.html" id="aim">
+                            <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Aim</span>
+                        </a>
+                    </li>
+                    <li class="treeview" id="theory">
+                        <a href="theory.html" id="theory">
+                            <i class="fa fa-files-o" style="color:white;"></i>
+                            <span style="color:white;">Theory</span>
+                        </a>
+                    </li>
+                    <li class="treeview" id="pretest">
+                        <a href="pretest.html" id="pretest">
+                            <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Pre Test</span>
+                        </a>
+                    </li>
+
+                    <li class="treeview" id="procedure">
+                        <a href="procedure.html" id="procedure">
+                            <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Procedure</span>
+                        </a>
+                    </li>
+                    <li class="treeview" id="simulation">
+                        <a href="simulation.html" id="simulation">
+                            <i class="fa fa-laptop" style="color:white;"></i>
+                            <span style="color:white;">Simulation</span>
+                        </a>
+                    </li>
+
+                    <li class="treeview" id="posttest">
+                        <a href="posttest.html" id="posttest">
+                            <i class="fa fa-files-o" style="color:white;"></i>
+                            <span style="color:white;">Post Test</span>
+                        </a>
+                    </li>
+                    <li class="treeview" id="ref">
+                        <a href="references.html" id="references">
+                            <i class="fa fa-files-o" style="color:white;"></i>
+                            <span style="color:white;">References</span>
+                        </a>
+                    </li>
+                </ul>
+            </section>
+        </aside>
+
+        <div class="content-wrapper">
+            <section class="content-header">
+                <h1 align="center">
+                    ADC Simulators - Experimental Procedure
+                </h1>
+            </section>
+            
+            <section class="content">
+                <h3 style="margin-top:5%"> Experimental Procedure </h3>
+                <p style="font-size:16px; margin-top:2%; line-height: 1.6;">
+                    This experiment has three different Analog-to-Digital Converters (ADCs). 
+                    Follow these steps for each ADC type.
+                </p>
+                
+                <h3>Single Slope ADC Procedure</h3>
+                <ol>
+                    <li><strong>Set ADC Parameters:</strong>
+                        <ul>
+                            <li>Select number of bits for output</li>
+                            <img src="./images/SingleslopeBits.png" alt="" style="width: 300px; height: auto;">
+                            <li>Set max count time using slider (10ms to 100ms)</li>
+                            <img src="./images/singleadctiming.png" alt="" style="width: 300px; height: auto;">
+                            <li>Clock frequency will be calculated automatically</li>
+                            <li>Select op-amp supply voltage</li>
+                            <img src="./images/SingleslopeOmpampsupply.png" alt="" style="width: 300px; height: auto;">
+                            <li>Set reference voltage (Vref)</li><img src="./images/singlevref.png" alt="" style="width: 300px; height: auto;">
+                            <li>Choose capacitor value</li><img src="./images/Singleslopecapacitor.png" alt="" style="width: 300px; height: auto;">
+                            <li>Adjust input voltage (Vin)</li><img src="./images/singlevin.png" alt="" style="width: 300px; height: auto;">
+                        </ul>
+                    </li>
+                    
+                    <li><strong>Calculate RC Parameters:</strong>
+                        Click "Calculate RC Parameters" button
+                    </li>
+                    <img src="./images/singlercparameter.png" alt="" style="width: 300px; height: auto;">
+                    
+                    <li><strong>Make Circuit Connections:</strong>
+                        Connect all 11 circuit points. Use "Auto-Connect" if needed.
+                    </li>
+                    
+                    <li><strong>Check Connections:</strong>
+                        Click "Check Connections" to verify
+                    </li>
+                    <img src="./images/Singleslopecircuit.png" alt="" style="width: 700px; height: auto;">
+                    
+                    <li><strong>Run Simulation:</strong>
+                        Click "Run Simulation" to see:
+                        <ul>
+                            <li>Ramp voltage increasing</li>
+                            <li>Counter counting</li>
+                            <li>Digital output when ramp crosses input</li>
+                        </ul>
+                    </li>
+                    <img src="./images/SingleslopeRunsimulation.png" alt="" style="width: 400px; height: auto;">
+                </ol>
+                <hr>
+                <h3>SAR ADC Procedure</h3>
+                <ol>
+                    <li><strong>Set ADC Parameters:</strong>
+                        <ul>
+                            <li>Select number of bits</li>
+                            <img src="./images/sarbits.png" alt="" style="width: 200px; height: auto;">
+                            <li>Set reference voltage (Vref)</li><img src="./images/sarvref.png" alt="" style="width: 200px; height: auto;">
+                            <li>Adjust input voltage (Vin)</li><img src="./images/sarinpvol.png" alt="" style="width: 200px; height: auto;">
+                            <li>Choose step speed</li><img src="./images/sarspeed.png" alt="" style="width: 200px; height: auto;">
+                        </ul>
+                    </li>
+                    
+                    <li><strong>Make Circuit Connections:</strong>
+                        Connect 7 circuit points. Use "Auto-Connect" if needed.
+                    </li>
+                    <img src="./images/sarcircuit.png" alt="" style="width: 700px; height: auto;">
+                    
+                    <li><strong>Check Connections:</strong>
+                        Click "Check Connections"
+                    </li>
+                    
+                    <li><strong>Start Simulation:</strong>
+                        Click "Start Simulation"
+                    </li>
+                    <img src="./images/sarstart.png" alt="" style="width: 300px; height: auto;">
+                    <li><strong>Step-by-Step Conversion:</strong>
+                        Use buttons:
+                        <ul>
+                            <li>Next Step: Move to next bit</li>
+                            <li>Previous Step: Go back</li>
+                            <li>Auto Run: Automatic steps</li>
+                            <li>Reset: Start over</li>
+                        </ul>
+                    </li><img src="./images/sarautorun.png" alt="" style="width: 400px; height: auto;">
+                </ol>
+                <hr>
+                <h3>Dual Slope ADC Procedure</h3>
+                <ol>
+                    <li><strong>Set ADC Parameters:</strong>
+                        <ul>
+                            <li>Select number of bits</li>
+                            <img src="./images/dualbitts.png" alt="" style="width: 200px; height: auto;">
+                            <li>Set reference voltage (Vref)</li><img src="./images/dualvref.png" alt="" style="width: 200px; height: auto;">
+                            <li>Adjust input voltage (Vin)</li><img src="./images/dualinpvoltage.png" alt="" style="width: 200px; height: auto;">
+                        </ul>
+                        <p><strong>Note:</strong> T1 integration time is fixed at 20ms</p>
+                    </li>
+                    <img src="./images/dualdata.png" alt="" style="width: 400px; height: auto;">
+                    
+                    <li><strong>Make Circuit Connections:</strong>
+                        Connect 12 circuit points. Use "Auto-Connect" if needed.
+                    </li>
+                    
+                    <img src="./images/dualcircuit.png" alt="" style="width: 700px; height: auto;">
+                    <li><strong>Check Connections:</strong>
+                        Verify all connections
+                    </li>
+                    
+                    <li><strong>Run Simulation:</strong>
+                        Watch two phases:
+                        <ul>
+                            <li>Phase 1: Integrate with Vin for 20ms</li>
+                            <li>Phase 2: Deintegrate with -Vref</li>
+                            <li>Counter counts only in Phase 2</li>
+                        </ul>
+                    </li>
+                    <img src="./images/dualrun.png" alt="" style="width: 300px; height: auto;">
+                </ol>
+                
+                <h3>General Instructions</h3>
+                <p><strong>Things to Observe:</strong></p>
+                <ul>
+                    <li>Compare conversion speeds</li>
+                    <li>Note circuit complexity</li>
+                    <li>See noise immunity differences</li>
+                    <li>Check accuracy of each ADC</li>
+                </ul>
+                
+                <p><strong>Tips:</strong></p>
+                <ul>
+                    <li>Try different input voltages</li>
+                    <li>Change bit resolution</li>
+                    <li>Compare all three ADCs</li>
+                    <li>Use "Reset All" for new test</li>
+                    <li>Complete Post-Test after simulation</li>
+                </ul>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <a href="simulation.html" class="btn btn-primary btn-lg" style="padding: 12px 30px;">
+                        <i class="fa fa-play-circle"></i> Start Simulation
+                    </a>
+                </div>
+            </section>
+        </div>
+        
+        <footer class="main-footer">
+            <h4 align="center">ADC Circuit Simulators Virtual Lab</h4>
+        </footer>
+    </div>
+
+    <!-- ./wrapper -->
+    <!-- jQuery 2.2.3 -->
+    <script src="../../plugins/jQuery/jquery-2.2.3.min.js"></script>
+    <!-- jQuery UI 1.11.4 -->
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+    <!-- Bootstrap 3.3.6 -->
+    <script src="../../bootstrap/js/bootstrap.min.js"></script>
+    <!-- Slimscroll -->
+    <script src="../../plugins/slimScroll/jquery.slimscroll.min.js"></script>
+    <!-- FastClick -->
+    <script src="../../plugins/fastclick/fastclick.js"></script>
+    <!-- AdminLTE App -->
+    <script src="../../dist/js/app.min.js"></script>
+</body>
+</html>
