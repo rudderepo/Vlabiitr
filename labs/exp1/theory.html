@@ -14,263 +14,349 @@
     <!-- AdminLTE Skins -->
     <link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">
     <style>
-        #toggle_nav:hover { background-color: #1261A0; }
-        #aim { background-color: #009dff; }
-        #aim:hover, #theory:hover, #pretest:hover, #procedure:hover, 
-        #simulation:hover, #result:hover, #posttest:hover, #references:hover { 
-            background-color: #009dff; 
+        #toggle_nav:hover {
+            background-color: #1261A0;
         }
-        
+
+        #aim {
+            background-color: #009dff;
+        }
+
+        #aim:hover,
+        #theory:hover,
+        #pretest:hover,
+        #procedure:hover,
+        #simulation:hover,
+        #result:hover,
+        #posttest:hover,
+        #references:hover {
+            background-color: #009dff;
+        }
+
         /* Main content styling */
-        .content-wrapper { 
-            background: #f4f4f4; 
-            min-height: 800px; 
+        .content-wrapper {
+            background: #f4f4f4;
+            min-height: 800px;
         }
-        .content { 
-            padding: 20px 25px; 
-            background: white; 
-            border-radius: 5px; 
-            margin: 15px; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
-            line-height: 1.6; 
-            font-size: 16px; 
-            text-align: justify; 
+
+        .content {
+            padding: 20px 25px;
+            background: white;
+            border-radius: 5px;
+            margin: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            line-height: 1.6;
+            font-size: 16px;
+            text-align: justify;
         }
-        h1, h2, h3, h4, h5 { 
-            color: #0d6efd; 
-            margin-top: 25px; 
-            margin-bottom: 15px; 
-            padding-bottom: 5px; 
-            border-bottom: 1px solid #eaeaea; 
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5 {
+            color: #0d6efd;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eaeaea;
         }
-        h1 { font-size: 28px; }
-        h2 { font-size: 24px; }
-        h3 { font-size: 20px; }
-        h4 { font-size: 18px; }
-        
+
+        h1 {
+            font-size: 28px;
+        }
+
+        h2 {
+            font-size: 24px;
+        }
+
+        h3 {
+            font-size: 20px;
+        }
+
+        h4 {
+            font-size: 18px;
+        }
+
         /* Image styling */
-        .content img { 
-            max-width: 80%; 
-            height: auto; 
-            display: block; 
-            margin: 25px auto; 
-            border: 1px solid #ddd; 
-            border-radius: 5px; 
-            padding: 8px; 
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1); 
+        .content img {
+            max-width: 80%;
+            height: auto;
+            display: block;
+            margin: 25px auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 8px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
         }
-        
+
         /* Two images side by side */
-        .image-pair { 
-            display: flex; 
-            justify-content: center; 
-            gap: 30px; 
-            margin: 25px auto; 
-            flex-wrap: wrap; 
+        .image-pair {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 25px auto;
+            flex-wrap: wrap;
         }
-        .image-pair img { 
-            max-width: 45%; 
-            flex: 1; 
-            min-width: 250px; 
+
+        .image-pair img {
+            max-width: 45%;
+            flex: 1;
+            min-width: 250px;
         }
-        
+
         /* Center single images */
-        .centered-image { 
-            text-align: center; 
-            margin: 25px 0; 
+        .centered-image {
+            text-align: center;
+            margin: 25px 0;
         }
-        .centered-image img { 
-            display: inline-block; 
+
+        .centered-image img {
+            display: inline-block;
         }
-        
+
         /* Formula image styling */
-        .formula-image { 
-            max-width: 50%; 
-            margin: 15px auto; 
-            border: 1px solid #ddd; 
-            padding: 10px; 
-            background: #f9f9f9; 
+        .formula-image {
+            max-width: 50%;
+            margin: 15px auto;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background: #f9f9f9;
         }
-        
+
         /* Figure caption styling */
-        .figure-container { 
-            margin: 25px auto; 
-            text-align: center; 
-            max-width: 90%; 
+        .figure-container {
+            margin: 25px auto;
+            text-align: center;
+            max-width: 90%;
         }
-        .figure-caption { 
-            font-style: italic; 
-            color: #666; 
-            margin-top: 8px; 
-            font-size: 14px; 
-            text-align: center; 
+
+        .figure-caption {
+            font-style: italic;
+            color: #666;
+            margin-top: 8px;
+            font-size: 14px;
+            text-align: center;
         }
-        .figure-number { 
-            font-weight: bold; 
-            color: #0d6efd; 
+
+        .figure-number {
+            font-weight: bold;
+            color: #0d6efd;
         }
-        
+
         /* List styling */
-        ol, ul { 
-            margin-left: 25px; 
-            margin-bottom: 20px; 
+        ol,
+        ul {
+            margin-left: 25px;
+            margin-bottom: 20px;
         }
-        li { 
-            margin-bottom: 8px; 
-            padding-left: 5px; 
+
+        li {
+            margin-bottom: 8px;
+            padding-left: 5px;
         }
-        
+
         /* Paragraph spacing */
-        p { 
-            margin-bottom: 15px; 
-            text-align: justify; 
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
         }
-        
+
         /* Table styling */
-        table { 
-            width: 100%; 
-            margin: 25px 0; 
-            border-collapse: collapse; 
-            background: white; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
-            border-radius: 5px; 
-            overflow: hidden; 
+        table {
+            width: 100%;
+            margin: 25px 0;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
         }
-        th { 
-            background: #0d6efd; 
-            color: white; 
-            padding: 12px; 
-            text-align: left; 
-            font-weight: 600; 
+
+        th {
+            background: #0d6efd;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
         }
-        td { 
-            padding: 10px 12px; 
-            border-bottom: 1px solid #eaeaea; 
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #eaeaea;
         }
-        tr:hover { 
-            background: #f8f9fa; 
+
+        tr:hover {
+            background: #f8f9fa;
         }
-        
+
         /* Code/Formula styling */
-        .formula { 
-            background: #f8f9fa; 
-            border-left: 4px solid #0d6efd; 
-            padding: 12px 15px; 
-            margin: 20px 0; 
-            font-family: 'Courier New', monospace; 
-            border-radius: 4px; 
+        .formula {
+            background: #f8f9fa;
+            border-left: 4px solid #0d6efd;
+            padding: 12px 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            border-radius: 4px;
         }
-        
+
         /* Advantages/Disadvantages sections */
-        .adv-disadv-section { 
-            background: #f8f9fa; 
-            padding: 15px; 
-            margin: 20px 0; 
-            border-radius: 5px; 
-            border: 1px solid #eaeaea; 
+        .adv-disadv-section {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            border: 1px solid #eaeaea;
         }
-        .adv-disadv-section h4 { 
-            color: #198754; 
-            border-bottom: none; 
-            margin-top: 10px; 
+
+        .adv-disadv-section h4 {
+            color: #198754;
+            border-bottom: none;
+            margin-top: 10px;
         }
-        .disadvantages h4 { 
-            color: #dc3545; 
+
+        .disadvantages h4 {
+            color: #dc3545;
         }
-        
+
+        /* For permanent black and white without hover effect */
+        .content img {
+            max-width: 80%;
+            height: auto;
+            display: block;
+            margin: 25px auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 8px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            /* Permanent grayscale - no hover effect */
+            filter: grayscale(100%);
+            -webkit-filter: grayscale(100%);
+            -moz-filter: grayscale(100%);
+            -o-filter: grayscale(100%);
+            -ms-filter: grayscale(100%);
+        }
+
+        /* All other image selectors with the same filter */
+        .image-pair img,
+        .formula-image,
+        .centered-image img,
+        .figure-container img {
+            filter: grayscale(100%);
+            -webkit-filter: grayscale(100%);
+            -moz-filter: grayscale(100%);
+            -o-filter: grayscale(100%);
+            -ms-filter: grayscale(100%);
+        }
+
         /* Navigation bar */
-        .navbar-default { 
-            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%); 
-            border: none; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
+        .navbar-default {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
-        .navbar-brand img { 
-            filter: brightness(0) invert(1); 
+
+        .navbar-brand img {
+            filter: brightness(0) invert(1);
         }
-        
+
         /* Header */
-        .main-header { 
-            background: #0d6efd; 
-            border-bottom: 3px solid #0a58ca; 
+        .main-header {
+            background: #0d6efd;
+            border-bottom: 3px solid #0a58ca;
         }
-        .logo { 
-            background: #0a58ca !important; 
-            border-right: 2px solid #0947a5 !important; 
+
+        .logo {
+            background: #0a58ca !important;
+            border-right: 2px solid #0947a5 !important;
         }
-        .logo p { 
-            margin: 0; 
-            padding: 15px; 
-            font-weight: 600; 
-            letter-spacing: 0.5px; 
+
+        .logo p {
+            margin: 0;
+            padding: 15px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
-        
+
         /* Sidebar */
-        .main-sidebar { 
-            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%) !important; 
-            border-right: 2px solid #0947a5; 
+        .main-sidebar {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%) !important;
+            border-right: 2px solid #0947a5;
         }
-        .sidebar-menu { 
-            background: transparent !important; 
+
+        .sidebar-menu {
+            background: transparent !important;
         }
-        .sidebar-menu li { 
-            margin: 0; 
-            border-bottom: 1px solid rgba(255,255,255,0.1); 
+
+        .sidebar-menu li {
+            margin: 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .sidebar-menu li:hover { 
-            background: rgba(255,255,255,0.1); 
+
+        .sidebar-menu li:hover {
+            background: rgba(255, 255, 255, 0.1);
         }
-        .sidebar-menu li.active { 
-            background: rgba(255,255,255,0.2); 
-            border-left: 4px solid white; 
+
+        .sidebar-menu li.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-left: 4px solid white;
         }
-        .sidebar-menu a { 
-            color: white !important; 
-            padding: 12px 15px; 
+
+        .sidebar-menu a {
+            color: white !important;
+            padding: 12px 15px;
         }
-        .sidebar-menu i { 
-            color: white !important; 
+
+        .sidebar-menu i {
+            color: white !important;
         }
-        
+
         /* Breadcrumb */
-        .breadcrumb { 
-            background: transparent; 
-            margin: 8px 0; 
+        .breadcrumb {
+            background: transparent;
+            margin: 8px 0;
         }
-        .breadcrumb a { 
-            color: rgba(255,255,255,0.9); 
+
+        .breadcrumb a {
+            color: rgba(255, 255, 255, 0.9);
         }
-        .breadcrumb li.active { 
-            color: white; 
+
+        .breadcrumb li.active {
+            color: white;
         }
-        
+
         /* Footer */
-        .main-footer { 
-            background: #0d6efd; 
-            color: white; 
-            padding: 15px; 
-            text-align: center; 
-            border-top: 3px solid #0a58ca; 
-            margin-top: 30px; 
+        .main-footer {
+            background: #0d6efd;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-top: 3px solid #0a58ca;
+            margin-top: 30px;
         }
-        
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
-            .content { 
-                padding: 15px; 
-                margin: 10px; 
+            .content {
+                padding: 15px;
+                margin: 10px;
             }
-            .content img { 
-                max-width: 95%; 
+
+            .content img {
+                max-width: 95%;
             }
-            .image-pair { 
-                flex-direction: column; 
-                gap: 15px; 
+
+            .image-pair {
+                flex-direction: column;
+                gap: 15px;
             }
-            .image-pair img { 
-                max-width: 100%; 
+
+            .image-pair img {
+                max-width: 100%;
             }
-            .formula-image { 
-                max-width: 90%; 
+
+            .formula-image {
+                max-width: 90%;
             }
         }
     </style>
@@ -324,13 +410,20 @@
             <section class="sidebar">
                 <!-- sidebar menu -->
                 <ul class="sidebar-menu">
-                    <li class="treeview" id="aim"><a href="index.html"><i class="fa fa-files-o"></i> <span>Aim</span></a></li>
-                    <li class="treeview active" id="theory"><a href="theory.html"><i class="fa fa-files-o"></i> <span>Theory</span></a></li>
-                    <li class="treeview" id="pretest"><a href="pretest.html"><i class="fa fa-files-o"></i> <span>Pre Test</span></a></li>
-                    <li class="treeview" id="procedure"><a href="procedure.html"><i class="fa fa-files-o"></i> <span>Procedure</span></a></li>
-                    <li class="treeview" id="simulation"><a href="simulation.html"><i class="fa fa-laptop"></i> <span>Simulation</span></a></li>
-                    <li class="treeview" id="posttest"><a href="posttest.html"><i class="fa fa-files-o"></i> <span>Post Test</span></a></li>
-                    <li class="treeview" id="ref"><a href="references.html"><i class="fa fa-files-o"></i> <span>References</span></a></li>
+                    <li class="treeview" id="aim"><a href="index.html"><i class="fa fa-files-o"></i>
+                            <span>Aim</span></a></li>
+                    <li class="treeview active" id="theory"><a href="theory.html"><i class="fa fa-files-o"></i>
+                            <span>Theory</span></a></li>
+                    <li class="treeview" id="pretest"><a href="pretest.html"><i class="fa fa-files-o"></i> <span>Pre
+                                Test</span></a></li>
+                    <li class="treeview" id="procedure"><a href="procedure.html"><i class="fa fa-files-o"></i>
+                            <span>Procedure</span></a></li>
+                    <li class="treeview" id="simulation"><a href="simulation.html"><i class="fa fa-laptop"></i>
+                            <span>Simulation</span></a></li>
+                    <li class="treeview" id="posttest"><a href="posttest.html"><i class="fa fa-files-o"></i> <span>Post
+                                Test</span></a></li>
+                    <li class="treeview" id="ref"><a href="references.html"><i class="fa fa-files-o"></i>
+                            <span>References</span></a></li>
                 </ul>
             </section>
         </aside>
@@ -339,58 +432,98 @@
             <section class="content-header">
                 <h1 align="center">Analog to Digital Converter - Theory</h1>
             </section>
-            
+
             <section class="content">
                 <h2>Introduction</h2>
-                <p>Analog-to-Digital Converters (ADCs) convert analog quantities—which vary continuously over time within their operating range—into digital data formats that represent information in a discrete manner. This digital representation enables efficient processing, computation, storage, transmission, and control within modern information processing, communication, and control systems.</p>
-                
+                <p>Analog-to-Digital Converters (ADCs) convert analog quantities—which vary continuously over time
+                    within their operating range—into digital data formats that represent information in a discrete
+                    manner. This digital representation enables efficient processing, computation, storage,
+                    transmission, and control within modern information processing, communication, and control systems.
+                </p>
+
                 <div class="figure-container">
-                    <img src=".\images\Screenshot 2025-12-19 121634.png" alt="ADC Overview">
-                    <div class="figure-caption"><span class="figure-number">Figure 1:</span> Basic ADC conversion process showing analog to digital transformation</div>
+                    <img src=".\images\Screenshot 2025-12-19 121634.png" alt="ADC Overview" style="height: auto; width: 500px;">
+                    <div class="figure-caption"><span class="figure-number">Figure 1:</span> Basic ADC conversion
+                        process showing analog to digital transformation</div>
                 </div>
-                
-                <p>Analog-to-Digital Converters are classified based on their conversion technique, speed, resolution, and application requirements. The major types are outlined below:</p>
+
+                <p>Analog-to-Digital Converters are classified based on their conversion technique, speed, resolution,
+                    and application requirements. The major types are outlined below:</p>
                 <ol>
-                    <li><strong>Successive Approximation Register (SAR) ADC</strong> - SAR ADCs perform conversion by successively narrowing down the digital output using a binary search algorithm and an internal DAC.</li>
-                    <li><strong>Single Slope ADC</strong> - A Single-Slope ADC, also known as a Ramp ADC, converts an analog input voltage into a digital value by comparing it with a linearly increasing reference voltage (ramp signal).</li>
-                    <li><strong>Dual Slope ADC</strong> - A Dual-Slope ADC is an integrating type of analog-to-digital converter that converts an analog input voltage into a digital value by measuring time intervals rather than voltage levels.</li>
+                    <li><strong>Successive Approximation Register (SAR) ADC</strong> - SAR ADCs perform conversion by
+                        successively narrowing down the digital output using a binary search algorithm and an internal
+                        DAC.</li>
+                    <li><strong>Single Slope ADC</strong> - A Single-Slope ADC, also known as a Ramp ADC, converts an
+                        analog input voltage into a digital value by comparing it with a linearly increasing reference
+                        voltage (ramp signal).</li>
+                    <li><strong>Dual Slope ADC</strong> - A Dual-Slope ADC is an integrating type of analog-to-digital
+                        converter that converts an analog input voltage into a digital value by measuring time intervals
+                        rather than voltage levels.</li>
                 </ol>
 
                 <h2>Sample and Hold Circuit</h2>
-                <p>A sample-and-hold (S/H) circuit is an electronic subsystem designed to acquire the instantaneous amplitude of a continuously varying analog signal at a specific moment and maintain (hold) that value constant for a predetermined duration. This functionality ensures that subsequent processing stages—most notably analog-to-digital converters (ADCs)—operate on a stable and time-invariant input voltage.</p>
+                <p>A sample-and-hold (S/H) circuit is an electronic subsystem designed to acquire the instantaneous
+                    amplitude of a continuously varying analog signal at a specific moment and maintain (hold) that
+                    value constant for a predetermined duration. This functionality ensures that subsequent processing
+                    stages—most notably analog-to-digital converters (ADCs)—operate on a stable and time-invariant input
+                    voltage.</p>
 
-                <p>In practical systems, ADCs do not perform conversion instantaneously; the conversion process requires a finite amount of time. If the analog input were allowed to vary during this interval, the ADC could sample different voltage levels within a single conversion cycle, leading to conversion inaccuracies, distortion, and quantization errors.</p>
+                <p>In practical systems, ADCs do not perform conversion instantaneously; the conversion process requires
+                    a finite amount of time. If the analog input were allowed to vary during this interval, the ADC
+                    could sample different voltage levels within a single conversion cycle, leading to conversion
+                    inaccuracies, distortion, and quantization errors.</p>
 
-                <p>By sampling the input signal at a precise instant and holding it steady throughout the conversion period, the sample-and-hold circuit effectively isolates the ADC from input signal fluctuations. This results in improved conversion accuracy, reduced dynamic errors, and reliable digital representation of the original analog signal.</p>
-                
+                <p>By sampling the input signal at a precise instant and holding it steady throughout the conversion
+                    period, the sample-and-hold circuit effectively isolates the ADC from input signal fluctuations.
+                    This results in improved conversion accuracy, reduced dynamic errors, and reliable digital
+                    representation of the original analog signal.</p>
+
                 <div class="image-pair">
                     <div class="figure-container">
-                        <img src=".\images\Screenshot 2025-12-18 123701.png" alt="Sample and Hold Circuit Diagram">
-                        <div class="figure-caption"><span class="figure-number">Figure 2a:</span> Sample and Hold circuit schematic</div>
+                        <img src=".\images\Screenshot 2025-12-18 123701.png" alt="Sample and Hold Circuit Diagram" style="height:auto; width: 450px;">
+                        <div class="figure-caption"><span class="figure-number">Figure 2a:</span> Sample and Hold
+                            circuit schematic</div>
                     </div>
                     <div class="figure-container">
-                        <img src=".\images\Screenshot 2025-12-18 123521.png" alt="Sample and Hold Timing Diagram">
-                        <div class="figure-caption"><span class="figure-number">Figure 2b:</span> Sample and Hold timing waveform</div>
+                        <img src=".\images\Screenshot 2025-12-18 123521.png" alt="Sample and Hold Timing Diagram" style="height:auto; width: 450px;">
+                        <div class="figure-caption"><span class="figure-number">Figure 2b:</span> Sample and Hold timing
+                            waveform</div>
                     </div>
                 </div>
 
                 <h1>Types of ADCs</h1>
 
                 <h2>1. Successive Approximation Register (SAR) ADC</h2>
-                
+
                 <div class="figure-container">
-                    <img src=".\images\Screenshot 2025-12-18 142445.png" alt="SAR ADC Block Diagram">
-                    <div class="figure-caption"><span class="figure-number">Figure 3:</span> Successive Approximation Register (SAR) ADC block diagram</div>
+                    <img src=".\images\Screenshot 2025-12-18 142445.png" alt="SAR ADC Block Diagram" style="height: 300px; width: 500px;">
+                    <div class="figure-caption"><span class="figure-number">Figure 3:</span> Successive Approximation
+                        Register (SAR) ADC block diagram</div>
                 </div>
-                
-                <p>A Successive-Approximation ADC (SAR ADC) converts each sampled value of a continuous-time analog signal into a corresponding digital code by implementing a binary search algorithm over the available quantization levels. This approach enables efficient and deterministic conversion with moderate speed and high accuracy.</p>
+
+                <p>A Successive-Approximation ADC (SAR ADC) converts each sampled value of a continuous-time analog
+                    signal into a corresponding digital code by implementing a binary search algorithm over the
+                    available quantization levels. This approach enables efficient and deterministic conversion with
+                    moderate speed and high accuracy.</p>
 
                 <h3>Working Principle</h3>
-                <p>The operation of a successive-approximation register (SAR) ADC begins with the sampling of the analog input voltage using a sample-and-hold circuit, which captures the instantaneous value of the input and maintains it at a constant level throughout the conversion process. Once sampling is complete, the SAR is initialized by resetting all bits and setting the most significant bit (MSB) to logic '1' while the remaining bits are set to logic '0'.</p>
-                
-                <p>The digital-to-analog converter (DAC) then converts this initial digital code into an analog voltage equal to half of the reference voltage. This DAC output is compared with the sampled input voltage using a comparator. If the DAC voltage is less than or equal to the input voltage, the MSB is retained; otherwise, it is cleared. The SAR then proceeds to test the next lower-order bit by setting it to logic '1' while preserving the previously determined higher-order bits.</p>
-                
-                <p>This comparison and decision process is repeated sequentially for each bit from the MSB to the least significant bit (LSB), with each step refining the approximation and reducing the conversion error. After all bits have been evaluated, the SAR contains the final digital code corresponding to the input analog voltage. This digital output is then latched and made available for further digital processing, completing the conversion in a fixed and predictable number of clock cycles.</p>
+                <p>The operation of a successive-approximation register (SAR) ADC begins with the sampling of the analog
+                    input voltage using a sample-and-hold circuit, which captures the instantaneous value of the input
+                    and maintains it at a constant level throughout the conversion process. Once sampling is complete,
+                    the SAR is initialized by resetting all bits and setting the most significant bit (MSB) to logic '1'
+                    while the remaining bits are set to logic '0'.</p>
+
+                <p>The digital-to-analog converter (DAC) then converts this initial digital code into an analog voltage
+                    equal to half of the reference voltage. This DAC output is compared with the sampled input voltage
+                    using a comparator. If the DAC voltage is less than or equal to the input voltage, the MSB is
+                    retained; otherwise, it is cleared. The SAR then proceeds to test the next lower-order bit by
+                    setting it to logic '1' while preserving the previously determined higher-order bits.</p>
+
+                <p>This comparison and decision process is repeated sequentially for each bit from the MSB to the least
+                    significant bit (LSB), with each step refining the approximation and reducing the conversion error.
+                    After all bits have been evaluated, the SAR contains the final digital code corresponding to the
+                    input analog voltage. This digital output is then latched and made available for further digital
+                    processing, completing the conversion in a fixed and predictable number of clock cycles.</p>
 
                 <div class="adv-disadv-section">
                     <h3>Advantages of SAR ADC:</h3>
@@ -427,24 +560,37 @@
                 </div>
 
                 <h2>2. Single Slope ADC</h2>
-                
+
                 <div class="figure-container">
-                    <img src=".\images\Screenshot 2025-12-19 125915.png" alt="Single Slope ADC Diagram">
-                    <div class="figure-caption"><span class="figure-number">Figure 4:</span> Single Slope ADC architecture</div>
+                    <img src=".\images\Screenshot 2025-12-19 125915.png" alt="Single Slope ADC Diagram" style="height: 400px; width: 600px;">
+                    <div class="figure-caption"><span class="figure-number">Figure 4:</span> Single Slope ADC
+                        architecture</div>
                 </div>
-                
-                <p>A single-slope analog-to-digital converter converts an analog input voltage into a digital output by comparing the input voltage with a constant-slope ramp signal and measuring the time taken by the ramp to reach the input level using a clock and counter.</p>
+
+                <p>A single-slope analog-to-digital converter converts an analog input voltage into a digital output by
+                    comparing the input voltage with a constant-slope ramp signal and measuring the time taken by the
+                    ramp to reach the input level using a clock and counter.</p>
 
                 <h3>Working Principle</h3>
-                <p>In a single-slope ADC, the conversion process begins by resetting the integrator capacitor and clearing the counter so that both start from zero. When conversion starts, a constant reference voltage is applied to the integrator, causing its output to increase linearly with time and form a ramp signal. This ramp voltage is continuously compared with the input analog voltage using a comparator.</p>
-                
-                <p>As long as the ramp voltage is lower than the input voltage, the comparator output remains high, allowing clock pulses to pass to the counter. The counter increments with each clock pulse during this interval. When the ramp voltage becomes equal to the input voltage, the comparator output switches state, which stops the clock from reaching the counter.</p>
-                
-                <p>The final count stored in the counter is then transferred to the output buffer and represents the digital equivalent of the input analog voltage. Since the ramp has a constant slope, the counted number of clock pulses is directly proportional to the magnitude of the input voltage.</p>
-                
+                <p>In a single-slope ADC, the conversion process begins by resetting the integrator capacitor and
+                    clearing the counter so that both start from zero. When conversion starts, a constant reference
+                    voltage is applied to the integrator, causing its output to increase linearly with time and form a
+                    ramp signal. This ramp voltage is continuously compared with the input analog voltage using a
+                    comparator.</p>
+
+                <p>As long as the ramp voltage is lower than the input voltage, the comparator output remains high,
+                    allowing clock pulses to pass to the counter. The counter increments with each clock pulse during
+                    this interval. When the ramp voltage becomes equal to the input voltage, the comparator output
+                    switches state, which stops the clock from reaching the counter.</p>
+
+                <p>The final count stored in the counter is then transferred to the output buffer and represents the
+                    digital equivalent of the input analog voltage. Since the ramp has a constant slope, the counted
+                    number of clock pulses is directly proportional to the magnitude of the input voltage.</p>
+
                 <div class="figure-container">
-                    <img src=".\images\Screenshot 2025-12-27 124917.png" alt="Single Slope ADC Working">
-                    <div class="figure-caption"><span class="figure-number">Figure 5:</span> Single Slope ADC timing diagram and conversion process</div>
+                    <img src=".\images\Screenshot 2025-12-27 124917.png" alt="Single Slope ADC Working" style="height: 300px; width: 600px;">
+                    <div class="figure-caption"><span class="figure-number">Figure 5:</span> Single Slope ADC timing
+                        diagram and conversion process</div>
                 </div>
 
                 <div class="adv-disadv-section">
@@ -480,36 +626,57 @@
                 </div>
 
                 <h2>3. Dual Slope ADC</h2>
-                
+
                 <div class="figure-container">
-                    <img src=".\images\Screenshot 2025-12-20 122156.png" alt="Dual Slope ADC Block Diagram">
-                    <div class="figure-caption"><span class="figure-number">Figure 6:</span> Dual Slope ADC block diagram</div>
+                    <img src=".\images\Screenshot 2025-12-20 122156.png" alt="Dual Slope ADC Block Diagram" style="height: 400px; width: 600px;">
+                    <div class="figure-caption"><span class="figure-number">Figure 6:</span> Dual Slope ADC block
+                        diagram</div>
                 </div>
-                
+
                 <h3>Working Principle</h3>
-                <p>The dual slope ADC conversion involves two stages of integration. In the first stage, referred to as the run-up phase or input integration phase, the unknown input voltage Vin is applied to the integrator for a fixed and exactly controlled time interval T1. During this period, the output of the integrator increases linearly with a slope proportional to the time integral of the input voltage.</p>
-                
+                <p>The dual slope ADC conversion involves two stages of integration. In the first stage, referred to as
+                    the run-up phase or input integration phase, the unknown input voltage Vin is applied to the
+                    integrator for a fixed and exactly controlled time interval T1. During this period, the output of
+                    the integrator increases linearly with a slope proportional to the time integral of the input
+                    voltage.</p>
+
                 <p>Mathematically, the output of the integrator at the end of this period can be written as:</p>
-                
+
                 <div class="figure-container">
-                    <img src=".\images\Screenshot 2025-12-22 103646.png" alt="Dual Slope Formula 1" class="formula-image">
-                    <div class="figure-caption"><span class="figure-number">Equation 1:</span> Integrator output voltage after T1 period</div>
+                    <img src=".\images\Screenshot 2025-12-22 103646.png" alt="Dual Slope Formula 1"
+                        class="formula-image" style="height: 80px; width: auto;">
+                    <div class="figure-caption"><span class="figure-number">Equation 1:</span> Integrator output voltage
+                        after T1 period</div>
                 </div>
-                
-                <p>This integration effectively averages the input signal, thus reducing broadband noise and periodic disturbances.</p>
-                
-                <p>In the second phase, also known as the run-down or reference de-integration phase, the input signal is disconnected and switched with the reference voltage of opposite polarity. The integrator then ramps back towards zero with a predictable slope. A comparator observes the output of the integrator and notes the time when the output passes through zero. This time T2 is measured by enabling a digital counter powered by a stable clock source.</p>
-                
+
+                <p>This integration effectively averages the input signal, thus reducing broadband noise and periodic
+                    disturbances.</p>
+
+                <p>In the second phase, also known as the run-down or reference de-integration phase, the input signal
+                    is disconnected and switched with the reference voltage of opposite polarity. The integrator then
+                    ramps back towards zero with a predictable slope. A comparator observes the output of the integrator
+                    and notes the time when the output passes through zero. This time T2 is measured by enabling a
+                    digital counter powered by a stable clock source.</p>
+
                 <p>Setting the integrator charge in both phases equal to each other gives:</p>
-                
+
                 <div class="figure-container">
-                    <img src=".\images\Screenshot 2025-12-22 104855.png" alt="Dual Slope Formula 2" class="formula-image">
-                    <div class="figure-caption"><span class="figure-number">Equation 2:</span> Dual slope conversion equation</div>
+                    <img src=".\images\Screenshot 2025-12-22 104855.png" alt="Dual Slope Formula 2"
+                        class="formula-image" style="height: 80px; width: 350px;">
+                    <div class="figure-caption"><span class="figure-number">Equation 2:</span> Dual slope conversion
+                        equation</div>
                 </div>
-                
-                <p>The digital output is based on a time ratio that depends mainly on the reference voltage and clock stability. The counter is purposefully enabled only during the de-integration interval, as this is the only phase where the measured time is dependent on the input voltage. This architecture rejects line frequencies (50/60 Hz) very effectively when T1 is selected as an integer multiple of the interference period.</p>
-                
-                <p>In conclusion, the dual-slope ADC's ability to provide high linearity, excellent noise rejection ratio, and long-term stability is based on its core mechanism of converting voltage into time while integrating it in a controlled process followed by digitizing this time using an accurate clock cycle.</p>
+
+                <p>The digital output is based on a time ratio that depends mainly on the reference voltage and clock
+                    stability. The counter is purposefully enabled only during the de-integration interval, as this is
+                    the only phase where the measured time is dependent on the input voltage. This architecture rejects
+                    line frequencies (50/60 Hz) very effectively when T1 is selected as an integer multiple of the
+                    interference period.</p>
+
+                <p>In conclusion, the dual-slope ADC's ability to provide high linearity, excellent noise rejection
+                    ratio, and long-term stability is based on its core mechanism of converting voltage into time while
+                    integrating it in a controlled process followed by digitizing this time using an accurate clock
+                    cycle.</p>
 
                 <div class="adv-disadv-section">
                     <h3>Advantages of Dual-Slope ADC:</h3>
@@ -546,9 +713,7 @@
                 </div>
 
                 <h1>Comparison of ADC Types</h1>
-                
-                
-                
+
                 <table>
                     <thead>
                         <tr>
@@ -605,7 +770,7 @@
                 </table>
             </section>
         </div>
-        
+
         <footer class="main-footer">
             <h4 align="center">ADC Circuit Simulators Virtual Lab</h4>
         </footer>
