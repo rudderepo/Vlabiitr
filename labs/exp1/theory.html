@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title> Virtual Labs </title>
-    <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.6 -->
     <link rel="stylesheet" href="../../bootstrap/css/bootstrap.css">
@@ -12,75 +11,267 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="../../dist/css/AdminLTE.css">
-    <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
+    <!-- AdminLTE Skins -->
     <link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">
-    <script>
-        window.onload = function () {
-            document.getElementById("theory").className = "active treeview";
-        }
-    </script>
     <style>
-        #toggle_nav:hover {
-            background-color: #1261A0;
+        #toggle_nav:hover { background-color: #1261A0; }
+        #aim { background-color: #009dff; }
+        #aim:hover, #theory:hover, #pretest:hover, #procedure:hover, 
+        #simulation:hover, #result:hover, #posttest:hover, #references:hover { 
+            background-color: #009dff; 
         }
-
-        #aim {
-            background-color: #009dff;
+        
+        /* Main content styling */
+        .content-wrapper { 
+            background: #f4f4f4; 
+            min-height: 800px; 
         }
-
-        #aim:hover,
-        #theory:hover,
-        #pretest:hover,
-        #procedure:hover,
-        #simulation:hover,
-        #result:hover,
-        #posttest:hover,
-        #references:hover {
-            background-color: #009dff;
+        .content { 
+            padding: 20px 25px; 
+            background: white; 
+            border-radius: 5px; 
+            margin: 15px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+            line-height: 1.6; 
+            font-size: 16px; 
+            text-align: justify; 
         }
-
+        h1, h2, h3, h4, h5 { 
+            color: #0d6efd; 
+            margin-top: 25px; 
+            margin-bottom: 15px; 
+            padding-bottom: 5px; 
+            border-bottom: 1px solid #eaeaea; 
+        }
+        h1 { font-size: 28px; }
+        h2 { font-size: 24px; }
+        h3 { font-size: 20px; }
+        h4 { font-size: 18px; }
+        
         /* Image styling */
-        .content img {
-            max-width: 80%;
-            height: auto;
-            display: block;
-            margin: 20px auto;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 5px;
-            filter: grayscale(100%);
-            -webkit-filter: grayscale(100%);
+        .content img { 
+            max-width: 80%; 
+            height: auto; 
+            display: block; 
+            margin: 25px auto; 
+            border: 1px solid #ddd; 
+            border-radius: 5px; 
+            padding: 8px; 
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1); 
         }
-
+        
         /* Two images side by side */
-        .image-pair {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 20px auto;
-            flex-wrap: wrap;
+        .image-pair { 
+            display: flex; 
+            justify-content: center; 
+            gap: 30px; 
+            margin: 25px auto; 
+            flex-wrap: wrap; 
         }
-
-        .image-pair img {
-            max-width: 45%;
-            flex: 1;
-            min-width: 200px;
+        .image-pair img { 
+            max-width: 45%; 
+            flex: 1; 
+            min-width: 250px; 
         }
-
+        
         /* Center single images */
-        .centered-image {
-            text-align: center;
-            margin: 20px 0;
+        .centered-image { 
+            text-align: center; 
+            margin: 25px 0; 
         }
-
-        .centered-image img {
-            display: inline-block;
+        .centered-image img { 
+            display: inline-block; 
         }
-
+        
         /* Formula image styling */
-        .formula-image {
-            max-width: 50%;
-            margin: 10px auto;
+        .formula-image { 
+            max-width: 50%; 
+            margin: 15px auto; 
+            border: 1px solid #ddd; 
+            padding: 10px; 
+            background: #f9f9f9; 
+        }
+        
+        /* Figure caption styling */
+        .figure-container { 
+            margin: 25px auto; 
+            text-align: center; 
+            max-width: 90%; 
+        }
+        .figure-caption { 
+            font-style: italic; 
+            color: #666; 
+            margin-top: 8px; 
+            font-size: 14px; 
+            text-align: center; 
+        }
+        .figure-number { 
+            font-weight: bold; 
+            color: #0d6efd; 
+        }
+        
+        /* List styling */
+        ol, ul { 
+            margin-left: 25px; 
+            margin-bottom: 20px; 
+        }
+        li { 
+            margin-bottom: 8px; 
+            padding-left: 5px; 
+        }
+        
+        /* Paragraph spacing */
+        p { 
+            margin-bottom: 15px; 
+            text-align: justify; 
+        }
+        
+        /* Table styling */
+        table { 
+            width: 100%; 
+            margin: 25px 0; 
+            border-collapse: collapse; 
+            background: white; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+            border-radius: 5px; 
+            overflow: hidden; 
+        }
+        th { 
+            background: #0d6efd; 
+            color: white; 
+            padding: 12px; 
+            text-align: left; 
+            font-weight: 600; 
+        }
+        td { 
+            padding: 10px 12px; 
+            border-bottom: 1px solid #eaeaea; 
+        }
+        tr:hover { 
+            background: #f8f9fa; 
+        }
+        
+        /* Code/Formula styling */
+        .formula { 
+            background: #f8f9fa; 
+            border-left: 4px solid #0d6efd; 
+            padding: 12px 15px; 
+            margin: 20px 0; 
+            font-family: 'Courier New', monospace; 
+            border-radius: 4px; 
+        }
+        
+        /* Advantages/Disadvantages sections */
+        .adv-disadv-section { 
+            background: #f8f9fa; 
+            padding: 15px; 
+            margin: 20px 0; 
+            border-radius: 5px; 
+            border: 1px solid #eaeaea; 
+        }
+        .adv-disadv-section h4 { 
+            color: #198754; 
+            border-bottom: none; 
+            margin-top: 10px; 
+        }
+        .disadvantages h4 { 
+            color: #dc3545; 
+        }
+        
+        /* Navigation bar */
+        .navbar-default { 
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%); 
+            border: none; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
+        }
+        .navbar-brand img { 
+            filter: brightness(0) invert(1); 
+        }
+        
+        /* Header */
+        .main-header { 
+            background: #0d6efd; 
+            border-bottom: 3px solid #0a58ca; 
+        }
+        .logo { 
+            background: #0a58ca !important; 
+            border-right: 2px solid #0947a5 !important; 
+        }
+        .logo p { 
+            margin: 0; 
+            padding: 15px; 
+            font-weight: 600; 
+            letter-spacing: 0.5px; 
+        }
+        
+        /* Sidebar */
+        .main-sidebar { 
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%) !important; 
+            border-right: 2px solid #0947a5; 
+        }
+        .sidebar-menu { 
+            background: transparent !important; 
+        }
+        .sidebar-menu li { 
+            margin: 0; 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+        }
+        .sidebar-menu li:hover { 
+            background: rgba(255,255,255,0.1); 
+        }
+        .sidebar-menu li.active { 
+            background: rgba(255,255,255,0.2); 
+            border-left: 4px solid white; 
+        }
+        .sidebar-menu a { 
+            color: white !important; 
+            padding: 12px 15px; 
+        }
+        .sidebar-menu i { 
+            color: white !important; 
+        }
+        
+        /* Breadcrumb */
+        .breadcrumb { 
+            background: transparent; 
+            margin: 8px 0; 
+        }
+        .breadcrumb a { 
+            color: rgba(255,255,255,0.9); 
+        }
+        .breadcrumb li.active { 
+            color: white; 
+        }
+        
+        /* Footer */
+        .main-footer { 
+            background: #0d6efd; 
+            color: white; 
+            padding: 15px; 
+            text-align: center; 
+            border-top: 3px solid #0a58ca; 
+            margin-top: 30px; 
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .content { 
+                padding: 15px; 
+                margin: 10px; 
+            }
+            .content img { 
+                max-width: 95%; 
+            }
+            .image-pair { 
+                flex-direction: column; 
+                gap: 15px; 
+            }
+            .image-pair img { 
+                max-width: 100%; 
+            }
+            .formula-image { 
+                max-width: 90%; 
+            }
         }
     </style>
 </head>
@@ -97,10 +288,10 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="http://iitb.ac.in"><span><img src="images/iitrLogo.png"
-                            style="margin-top:-15px;height:50px;width: 400px;"></span></a>
+                            style="margin-top:-15px;height:50px;width:400px;"></span></a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-ex-collapse">
-
+                <!-- Navigation content if needed -->
             </div>
         </div>
     </div>
@@ -108,24 +299,19 @@
     <div class="wrapper">
         <header class="main-header">
             <!-- Logo -->
-            <a href="../index.html" class="logo"
-                style="background-color:#009dff; border-right:solid;border-right-color: #1261A0;">
-                <p align="center" style="font-size:1em;"><b>Lab Name</b></p>
+            <a href="../index.html" class="logo">
+                <p align="center" style="font-size:1em;"><b>ADC Circuit Simulators Lab</b></p>
             </a>
-            <!-- Header Navbar: style can be found in header.less -->
-            <nav class="navbar navbar-static-top" style="background-color:#009dff;">
+            <!-- Header Navbar -->
+            <nav class="navbar navbar-static-top">
                 <!-- Sidebar toggle button-->
                 <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button" id="toggle_nav">
                     <span class="sr-only">Toggle navigation</span>
                 </a>
                 <section class="content-header">
                     <ol class="breadcrumb">
-                        <li>
-                            <a href="../index.html"><i class="fa fa-dashboard"></i>Lab Name</a>
-                        </li>
-                        <li>
-                            <a href="#">Experiment Name</a>
-                        </li>
+                        <li><a href="../index.html"><i class="fa fa-dashboard"></i>ADC Circuits</a></li>
+                        <li><a href="#">Analog to Digital Converters</a></li>
                         <li class="active">Theory</li>
                     </ol>
                 </section>
@@ -133,302 +319,301 @@
         </header>
 
         <!-- Left side column. contains the logo and sidebar -->
-        <aside class="main-sidebar" style="background-color:#1261A0;">
-            <!-- sidebar: style can be found in sidebar.less -->
+        <aside class="main-sidebar">
+            <!-- sidebar -->
             <section class="sidebar">
-                <!-- search form -->
-                <form action="#" method="get" class="sidebar-form">
-                    <div class="input-group"></div>
-                </form>
-                <!-- /.sear ch form -->
-                <!-- sidebar menu: : style can be found in sidebar.less -->
-                <ul class="sidebar-menu" style="background-color:#1261A0;">
-                    <li class="treeview" id="aim">
-                        <a href="index.html" id="aim">
-                            <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Aim</span>
-
-                        </a>
-                    </li>
-                    <li class="treeview" id="theory">
-                        <a href="theory.html" id="theory" onclick="theory()">
-                            <i class="fa fa-files-o" style="color:white;"></i>
-                            <span style="color:white;">Theory</span>
-                        </a>
-                    </li>
-                    <li class="treeview" id="pretest">
-                        <a href="pretest.html" id="pretest">
-                            <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Pre
-                                Test</span>
-
-                        </a>
-                    </li>
-
-                    <li class="treeview" id="procedure">
-                        <a href="procedure.html" id="procedure">
-                            <i class="fa fa-files-o" style="color:white;"></i> <span
-                                style="color:white;">Procedure</span>
-                        </a>
-                    </li>
-                    <li class="treeview" id="simulation">
-                        <a href="simulation.html" id="simulation">
-                            <i class="fa fa-laptop" style="color:white;"></i>
-                            <span style="color:white;">Simulation</span>
-                            <span class="pull-right-container">
-                            </span>
-                        </a>
-                    </li>
-
-                    <li class="treeview" id="posttest">
-                        <a href=" posttest.html" id="posttest">
-                            <i class=" fa fa-files-o" style="color:white;">
-                            </i>
-                            <span style="color:white;">Post Test</span>
-                            <span class="pull-right-container">
-                            </span>
-                        </a>
-                    </li>
-                    <li class="treeview" id="ref">
-                        <a href="references.html" id="references">
-                            <i class="fa fa-files-o" style="color:white;"></i>
-                            <span style="color:white;">References</span>
-                            <span class="pull-right-container">
-                            </span>
-                        </a>
-                    </li>
+                <!-- sidebar menu -->
+                <ul class="sidebar-menu">
+                    <li class="treeview" id="aim"><a href="index.html"><i class="fa fa-files-o"></i> <span>Aim</span></a></li>
+                    <li class="treeview active" id="theory"><a href="theory.html"><i class="fa fa-files-o"></i> <span>Theory</span></a></li>
+                    <li class="treeview" id="pretest"><a href="pretest.html"><i class="fa fa-files-o"></i> <span>Pre Test</span></a></li>
+                    <li class="treeview" id="procedure"><a href="procedure.html"><i class="fa fa-files-o"></i> <span>Procedure</span></a></li>
+                    <li class="treeview" id="simulation"><a href="simulation.html"><i class="fa fa-laptop"></i> <span>Simulation</span></a></li>
+                    <li class="treeview" id="posttest"><a href="posttest.html"><i class="fa fa-files-o"></i> <span>Post Test</span></a></li>
+                    <li class="treeview" id="ref"><a href="references.html"><i class="fa fa-files-o"></i> <span>References</span></a></li>
                 </ul>
             </section>
-            <!-- /.sidebar -->
         </aside>
 
-
         <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
             <section class="content-header">
-                <h1 align="center">
-                    Analog to Digital Converter </h1>
+                <h1 align="center">Analog to Digital Converter - Theory</h1>
             </section>
-            <!-- Main content -->
+            
             <section class="content">
-                <h3 style="margin-top:5%"> Theory </h3>
-                <p style="font-size:130%; margin-top:2%">
-                <p>Analog-to-Digital Converters (ADCs) convert analog quantities(continuously over time within its
-                    operating range)—representative of most real-world physical phenomena—into digital data
-                    formats(represent information in a discrete manner). This digital representation enables efficient
-                    processing, computation, storage, transmission, and control within modern information processing,
-                    communication, and control systems.</p>
+                <h2>Introduction</h2>
+                <p>Analog-to-Digital Converters (ADCs) convert analog quantities—which vary continuously over time within their operating range—into digital data formats that represent information in a discrete manner. This digital representation enables efficient processing, computation, storage, transmission, and control within modern information processing, communication, and control systems.</p>
                 
-                <div class="centered-image">
-                    <img src=".\images\Screenshot 2025-12-19 121634.png" alt="ADC Overview" height="100px" width="600px">
+                <div class="figure-container">
+                    <img src=".\images\Screenshot 2025-12-19 121634.png" alt="ADC Overview">
+                    <div class="figure-caption"><span class="figure-number">Figure 1:</span> Basic ADC conversion process showing analog to digital transformation</div>
                 </div>
                 
-                <p>Analog-to-Digital Converters are classified based on their conversion technique, speed, resolution,
-                    and application requirements. The major types are outlined below:</p>
+                <p>Analog-to-Digital Converters are classified based on their conversion technique, speed, resolution, and application requirements. The major types are outlined below:</p>
                 <ol>
-                    <li><strong>Successive Approximation Register (SAR) ADC</strong> - SAR ADCs perform conversion by
-                        successively narrowing down the digital output using a binary search algorithm and an internal
-                        DAC.</li>
-                    <li><strong>Single Slope ADC</strong> - A Single-Slope ADC, also known as a Ramp ADC, converts an
-                        analog input voltage into a digital value by comparing it with a linearly increasing reference
-                        voltage (ramp signal).</li>
-                    <li><strong>Double Slope ADC</strong> - A Dual-Slope ADC is an integrating type of analog-to-digital
-                        converter that converts an analog input voltage into a digital value by measuring time intervals
-                        rather than voltage levels.</li>
+                    <li><strong>Successive Approximation Register (SAR) ADC</strong> - SAR ADCs perform conversion by successively narrowing down the digital output using a binary search algorithm and an internal DAC.</li>
+                    <li><strong>Single Slope ADC</strong> - A Single-Slope ADC, also known as a Ramp ADC, converts an analog input voltage into a digital value by comparing it with a linearly increasing reference voltage (ramp signal).</li>
+                    <li><strong>Dual Slope ADC</strong> - A Dual-Slope ADC is an integrating type of analog-to-digital converter that converts an analog input voltage into a digital value by measuring time intervals rather than voltage levels.</li>
                 </ol>
 
-                <h2>Sample and Hold</h2>
-                <p>A sample-and-hold (S/H) circuit is an electronic subsystem designed to acquire the instantaneous
-                    amplitude of a continuously varying analog signal at a specific moment and maintain (hold) that
-                    value constant for a predetermined duration. This functionality ensures that subsequent processing
-                    stages—most notably analog-to-digital converters (ADCs)—operate on a stable and time-invariant input
-                    voltage.</p>
+                <h2>Sample and Hold Circuit</h2>
+                <p>A sample-and-hold (S/H) circuit is an electronic subsystem designed to acquire the instantaneous amplitude of a continuously varying analog signal at a specific moment and maintain (hold) that value constant for a predetermined duration. This functionality ensures that subsequent processing stages—most notably analog-to-digital converters (ADCs)—operate on a stable and time-invariant input voltage.</p>
 
-                <p>In practical systems, ADCs do not perform conversion instantaneously; the conversion process requires
-                    a finite amount of time. If the analog input were allowed to vary during this interval, the ADC
-                    could sample different voltage levels within a single conversion cycle, leading to conversion
-                    inaccuracies, distortion, and quantization errors.</p>
+                <p>In practical systems, ADCs do not perform conversion instantaneously; the conversion process requires a finite amount of time. If the analog input were allowed to vary during this interval, the ADC could sample different voltage levels within a single conversion cycle, leading to conversion inaccuracies, distortion, and quantization errors.</p>
 
-                <p>By sampling the input signal at a precise instant and holding it steady throughout the conversion
-                    period, the sample-and-hold circuit effectively isolates the ADC from input signal fluctuations.
-                    This results in improved conversion accuracy, reduced dynamic errors, and reliable digital
-                    representation of the original analog signal.</p>
+                <p>By sampling the input signal at a precise instant and holding it steady throughout the conversion period, the sample-and-hold circuit effectively isolates the ADC from input signal fluctuations. This results in improved conversion accuracy, reduced dynamic errors, and reliable digital representation of the original analog signal.</p>
                 
                 <div class="image-pair">
-                    <img src=".\images\Screenshot 2025-12-18 123701.png" alt="Sample and Hold 1" height="100px" width="200px">
-                    <img src=".\images\Screenshot 2025-12-18 123521.png" alt="Sample and Hold 2" height="100px" width="200px">
+                    <div class="figure-container">
+                        <img src=".\images\Screenshot 2025-12-18 123701.png" alt="Sample and Hold Circuit Diagram">
+                        <div class="figure-caption"><span class="figure-number">Figure 2a:</span> Sample and Hold circuit schematic</div>
+                    </div>
+                    <div class="figure-container">
+                        <img src=".\images\Screenshot 2025-12-18 123521.png" alt="Sample and Hold Timing Diagram">
+                        <div class="figure-caption"><span class="figure-number">Figure 2b:</span> Sample and Hold timing waveform</div>
+                    </div>
                 </div>
 
-                <h1>Type Of ADC</h1>
+                <h1>Types of ADCs</h1>
 
                 <h2>1. Successive Approximation Register (SAR) ADC</h2>
                 
-                <div class="centered-image">
-                    <img src=".\images\Screenshot 2025-12-18 142445.png" alt="SAR ADC" height="300px" width="500px">
+                <div class="figure-container">
+                    <img src=".\images\Screenshot 2025-12-18 142445.png" alt="SAR ADC Block Diagram">
+                    <div class="figure-caption"><span class="figure-number">Figure 3:</span> Successive Approximation Register (SAR) ADC block diagram</div>
                 </div>
                 
-                <p>A Successive-Approximation ADC (SAR ADC) converts each sampled value of a continuous-time analog
-                    signal into a corresponding digital code by implementing a binary search algorithm over the
-                    available quantization levels. This approach enables efficient and deterministic conversion with
-                    moderate speed and high accuracy.</p>
+                <p>A Successive-Approximation ADC (SAR ADC) converts each sampled value of a continuous-time analog signal into a corresponding digital code by implementing a binary search algorithm over the available quantization levels. This approach enables efficient and deterministic conversion with moderate speed and high accuracy.</p>
 
-                <h3>Working of a Successive-Approximation Register (SAR) ADC:</h3>
-                <p>The operation of a successive-approximation register (SAR) ADC begins with the sampling of the analog
-                    input voltage using a sample-and-hold circuit, which captures the instantaneous value of the input
-                    and maintains it at a constant level throughout the conversion process. Once sampling is complete,
-                    the SAR is initialized by resetting all bits and setting the most significant bit (MSB) to logic ‘1’
-                    while the remaining bits are set to logic ‘0’. The digital-to-analog converter (DAC) then converts
-                    this initial digital code into an analog voltage equal to half of the reference voltage. This DAC
-                    output is compared with the sampled input voltage using a comparator. If the DAC voltage is less
-                    than or equal to the input voltage, the MSB is retained; otherwise, it is cleared. The SAR then
-                    proceeds to test the next lower-order bit by setting it to logic ‘1’ while preserving the previously
-                    determined higher-order bits. This comparison and decision process is repeated sequentially for each
-                    bit from the MSB to the least significant bit (LSB), with each step refining the approximation and
-                    reducing the conversion error. After all bits have been evaluated, the SAR contains the final
-                    digital code corresponding to the input analog voltage. This digital output is then latched and made
-                    available for further digital processing, completing the conversion in a fixed and predictable
-                    number of clock cycles.</p>
+                <h3>Working Principle</h3>
+                <p>The operation of a successive-approximation register (SAR) ADC begins with the sampling of the analog input voltage using a sample-and-hold circuit, which captures the instantaneous value of the input and maintains it at a constant level throughout the conversion process. Once sampling is complete, the SAR is initialized by resetting all bits and setting the most significant bit (MSB) to logic '1' while the remaining bits are set to logic '0'.</p>
+                
+                <p>The digital-to-analog converter (DAC) then converts this initial digital code into an analog voltage equal to half of the reference voltage. This DAC output is compared with the sampled input voltage using a comparator. If the DAC voltage is less than or equal to the input voltage, the MSB is retained; otherwise, it is cleared. The SAR then proceeds to test the next lower-order bit by setting it to logic '1' while preserving the previously determined higher-order bits.</p>
+                
+                <p>This comparison and decision process is repeated sequentially for each bit from the MSB to the least significant bit (LSB), with each step refining the approximation and reducing the conversion error. After all bits have been evaluated, the SAR contains the final digital code corresponding to the input analog voltage. This digital output is then latched and made available for further digital processing, completing the conversion in a fixed and predictable number of clock cycles.</p>
 
-                <h3>Advantages:</h3>
-                <p>deterministic conversion time, good resolution and accuracy, moderate power consumption, compact
-                    hardware architecture, excellent linearity, wide microcontroller compatibility</p>
+                <div class="adv-disadv-section">
+                    <h3>Advantages of SAR ADC:</h3>
+                    <ul>
+                        <li>Deterministic conversion time</li>
+                        <li>Good resolution and accuracy</li>
+                        <li>Moderate power consumption</li>
+                        <li>Compact hardware architecture</li>
+                        <li>Excellent linearity</li>
+                        <li>Wide microcontroller compatibility</li>
+                    </ul>
+                </div>
 
-                <h3>Disadvantages:</h3>
-                <p>limited conversion speed compared to flash ADCs, requirement of stable input during conversion,
-                    dependence on DAC accuracy and settling time, sensitivity to comparator noise and offset</p>
+                <div class="adv-disadv-section disadvantages">
+                    <h3>Disadvantages of SAR ADC:</h3>
+                    <ul>
+                        <li>Limited conversion speed compared to flash ADCs</li>
+                        <li>Requirement of stable input during conversion</li>
+                        <li>Dependence on DAC accuracy and settling time</li>
+                        <li>Sensitivity to comparator noise and offset</li>
+                    </ul>
+                </div>
 
-                <h3>Applications:</h3>
-                <p>data acquisition systems, microcontroller and embedded systems, industrial measurement and control,
-                    sensor interfacing, portable and battery-powered devices, medium-speed instrumentation</p>
+                <div class="adv-disadv-section">
+                    <h3>Applications of SAR ADC:</h3>
+                    <ul>
+                        <li>Data acquisition systems</li>
+                        <li>Microcontroller and embedded systems</li>
+                        <li>Industrial measurement and control</li>
+                        <li>Sensor interfacing</li>
+                        <li>Portable and battery-powered devices</li>
+                        <li>Medium-speed instrumentation</li>
+                    </ul>
+                </div>
 
                 <h2>2. Single Slope ADC</h2>
                 
-                <div class="centered-image">
-                    <img src=".\images\Screenshot 2025-12-19 125915.png" alt="Single Slope ADC" height="300px" width="600px">
+                <div class="figure-container">
+                    <img src=".\images\Screenshot 2025-12-19 125915.png" alt="Single Slope ADC Diagram">
+                    <div class="figure-caption"><span class="figure-number">Figure 4:</span> Single Slope ADC architecture</div>
                 </div>
                 
-                <p>A single-slope analog-to-digital converter converts an analog input voltage into a digital output by
-                    comparing the input voltage with a constant-slope ramp signal and measuring the time taken by the
-                    ramp to reach the input level using a clock and counter.</p>
+                <p>A single-slope analog-to-digital converter converts an analog input voltage into a digital output by comparing the input voltage with a constant-slope ramp signal and measuring the time taken by the ramp to reach the input level using a clock and counter.</p>
 
-                <h3>Working of a Single Slope ADC:</h3>
-                <p>In a single-slope ADC, the conversion process begins by resetting the integrator capacitor and
-                    clearing the counter so that both start from zero. When conversion starts, a constant reference
-                    voltage is applied to the integrator, causing its output to increase linearly with time and form a
-                    ramp signal. This ramp voltage is continuously compared with the input analog voltage using a
-                    comparator. As long as the ramp voltage is lower than the input voltage, the comparator output
-                    remains high, allowing clock pulses to pass to the counter. The counter increments with each clock
-                    pulse during this interval. When the ramp voltage becomes equal to the input voltage, the comparator
-                    output switches state, which stops the clock from reaching the counter. The final count stored in
-                    the counter is then transferred to the output buffer and represents the digital equivalent of the
-                    input analog voltage. Since the ramp has a constant slope, the counted number of clock pulses is
-                    directly proportional to the magnitude of the input voltage.</p>
+                <h3>Working Principle</h3>
+                <p>In a single-slope ADC, the conversion process begins by resetting the integrator capacitor and clearing the counter so that both start from zero. When conversion starts, a constant reference voltage is applied to the integrator, causing its output to increase linearly with time and form a ramp signal. This ramp voltage is continuously compared with the input analog voltage using a comparator.</p>
                 
-                <div class="centered-image">
-                    <img src=".\images\Screenshot 2025-12-27 124917.png" alt="Single Slope Working" height="300px" width="600px">
+                <p>As long as the ramp voltage is lower than the input voltage, the comparator output remains high, allowing clock pulses to pass to the counter. The counter increments with each clock pulse during this interval. When the ramp voltage becomes equal to the input voltage, the comparator output switches state, which stops the clock from reaching the counter.</p>
+                
+                <p>The final count stored in the counter is then transferred to the output buffer and represents the digital equivalent of the input analog voltage. Since the ramp has a constant slope, the counted number of clock pulses is directly proportional to the magnitude of the input voltage.</p>
+                
+                <div class="figure-container">
+                    <img src=".\images\Screenshot 2025-12-27 124917.png" alt="Single Slope ADC Working">
+                    <div class="figure-caption"><span class="figure-number">Figure 5:</span> Single Slope ADC timing diagram and conversion process</div>
                 </div>
 
-                <h3>Advantages:</h3>
-                <p>A simple and low-cost implementation due to its minimal hardware requirements, as well as ease of
-                    understanding and analysis, which makes it particularly suitable for educational purposes and
-                    low-speed systems.</p>
+                <div class="adv-disadv-section">
+                    <h3>Advantages of Single Slope ADC:</h3>
+                    <ul>
+                        <li>Simple and low-cost implementation</li>
+                        <li>Minimal hardware requirements</li>
+                        <li>Ease of understanding and analysis</li>
+                        <li>Suitable for educational purposes</li>
+                        <li>Good for low-speed systems</li>
+                    </ul>
+                </div>
 
-                <h3>Disadvantages:</h3>
-                <p>The conversion process is relatively slow, and the conversion time depends directly on the magnitude
-                    of the input signal, leading to non-uniform conversion delays. Additionally, the accuracy of the
-                    converter is sensitive to noise, ramp linearity, and clock instability.</p>
+                <div class="adv-disadv-section disadvantages">
+                    <h3>Disadvantages of Single Slope ADC:</h3>
+                    <ul>
+                        <li>Relatively slow conversion process</li>
+                        <li>Conversion time depends on input magnitude</li>
+                        <li>Non-uniform conversion delays</li>
+                        <li>Sensitive to noise and ramp linearity</li>
+                        <li>Affected by clock instability</li>
+                    </ul>
+                </div>
 
-                <h3>Applications:</h3>
-                <p>Despite these drawbacks, single-slope ADCs are commonly used in basic data acquisition applications,
-                    low-speed measurement instruments, and educational or demonstration systems where simplicity and
-                    cost are more important than speed and high precision.</p>
+                <div class="adv-disadv-section">
+                    <h3>Applications of Single Slope ADC:</h3>
+                    <ul>
+                        <li>Basic data acquisition applications</li>
+                        <li>Low-speed measurement instruments</li>
+                        <li>Educational and demonstration systems</li>
+                        <li>Applications where simplicity and cost are prioritized over speed</li>
+                    </ul>
+                </div>
 
-                <h2>3. DUAL SLOPE ADC</h2>
+                <h2>3. Dual Slope ADC</h2>
                 
-                <div class="centered-image">
-                    <img src=".\images\Screenshot 2025-12-20 122156.png" alt="Dual Slope ADC" height="300px" width="600px">
+                <div class="figure-container">
+                    <img src=".\images\Screenshot 2025-12-20 122156.png" alt="Dual Slope ADC Block Diagram">
+                    <div class="figure-caption"><span class="figure-number">Figure 6:</span> Dual Slope ADC block diagram</div>
                 </div>
                 
-                <h3>Working Of Dual Slope ADC:</h3>
-                <p>The process of conversion involves two stages of integration. In the first stage, referred to as the
-                    run-up phase or input integration phase, the following unknown input voltage. Vin is applied to the
-                    integrator for a fixed and exactly controlled time interval T1. During this period, the output of
-                    the integrator increases linearly with a slope proportional to the time integral of the input
-                    voltage. Mathematically, the output of the integrator at the end of this period can be written as.</p>
+                <h3>Working Principle</h3>
+                <p>The dual slope ADC conversion involves two stages of integration. In the first stage, referred to as the run-up phase or input integration phase, the unknown input voltage Vin is applied to the integrator for a fixed and exactly controlled time interval T1. During this period, the output of the integrator increases linearly with a slope proportional to the time integral of the input voltage.</p>
                 
-                <div class="centered-image">
-                    <img src=".\images\Screenshot 2025-12-22 103646.png" alt="Dual Slope Formula" class="formula-image">
+                <p>Mathematically, the output of the integrator at the end of this period can be written as:</p>
+                
+                <div class="figure-container">
+                    <img src=".\images\Screenshot 2025-12-22 103646.png" alt="Dual Slope Formula 1" class="formula-image">
+                    <div class="figure-caption"><span class="figure-number">Equation 1:</span> Integrator output voltage after T1 period</div>
                 </div>
                 
-                <p>It effectively averages the input signal, thus reducing the broadband noise and periodical
-                    disturbance.In the second phase, also known as the run-down or reference de-integration phase, the
-                    input signal is disconnected and switched with the reference voltage of opposite polarity. The
-                    integrator then ramps back towards zero with a predictable slope. A comparator observes the output
-                    of the integrator and notes the time when the output passes through zero. This time, which describes
-                    the duration of a pulse, can then be expressed as, T2 which is measured by enabling a digital
-                    counter powered by a stable clock source. Here's a description of how a digital computer calculates
-                    Setting the integrator charge in both phases equal to each other gives us specifically, the
-                    components of the integrator C cancel, thus making the result of the conversion largely insensitive
-                    to these absolute values.</p>
+                <p>This integration effectively averages the input signal, thus reducing broadband noise and periodic disturbances.</p>
                 
-                <div class="centered-image">
-                    <img src=".\images\Screenshot 2025-12-22 104855.png" alt="Dual Slope Calculation" class="formula-image">
+                <p>In the second phase, also known as the run-down or reference de-integration phase, the input signal is disconnected and switched with the reference voltage of opposite polarity. The integrator then ramps back towards zero with a predictable slope. A comparator observes the output of the integrator and notes the time when the output passes through zero. This time T2 is measured by enabling a digital counter powered by a stable clock source.</p>
+                
+                <p>Setting the integrator charge in both phases equal to each other gives:</p>
+                
+                <div class="figure-container">
+                    <img src=".\images\Screenshot 2025-12-22 104855.png" alt="Dual Slope Formula 2" class="formula-image">
+                    <div class="figure-caption"><span class="figure-number">Equation 2:</span> Dual slope conversion equation</div>
                 </div>
                 
-                <p>The digital output, thus, is based on a time ratio that depends mainly on the reference voltage and
-                    clock stability.The counter is purposefully enabled only during the de-integration interval, as this
-                    is the only phase where the measured time is dependent on the input voltage. This is because the
-                    first integration period integrates all the charge on the capacitor. T1 is fixed and therefore
-                    yields no measurement information. The architecture rejects line frequencies 50/60 Hz very
-                    effectively when T1 is selected as an integer multiple of the interference period. In conclusion,
-                    the dual-slope ADC's ability to provide a high degree of linearity, excellent noise rejection ratio,
-                    and long-term stability is based on its core mechanism of converting the voltage into time while
-                    integrating it in a controlled process followed by digitizing this time using an accurate clock
-                    cycle. The dual-slope ADC is thus very appropriate for use in precise measuring instruments like
-                    digital multimeters.</p>
-
-                <h3>Advantages of Dual-Slope ADC:</h3>
-                <p>High accuracy and excellent linearity, since the conversion result depends on a time ratio rather
-                    than absolute component values. Excellent noise rejection, particularly for power-line interference
-                    (50/60 Hz), due to the averaging effect during the fixed integration interval. Insensitive to
-                    component tolerances, as resistor and capacitor values cancel out in the conversion equation. Good
-                    long-term stability, making the converter suitable for precision measurements. Low offset and drift
-                    errors, as comparator and op-amp imperfections have minimal impact on the final result.</p>
-
-                <h3>Disadvantages of Dual-Slope ADC:</h3>
-                <p>Slow conversion speed, because two integration phases are required for each conversion cycle.
-                    Unsuitable for rapidly varying input signals, as the input must remain stable during the integration
-                    interval. Limited bandwidth, restricting use to low-frequency or DC measurements. More complex
-                    control logic compared to simple ramp (single-slope) ADCs.</p>
-
-                <h3>Applications of Dual-Slope ADC:</h3>
-                <p>Digital multimeters (DMMs) for accurate DC voltage and current measurements. Precision
-                    instrumentation where accuracy and noise immunity are critical. Industrial measurement systems
-                    operating in electrically noisy environments. Laboratory and metrology equipment requiring stable
-                    and repeatable measurements. Sensor signal conditioning for slowly varying signals such as
-                    temperature, pressure, and strain.</p>
-
-                <h1>Difference Between Single-Slope ADC vs Dual-Slope ADC vs SAR ADC</h1>
+                <p>The digital output is based on a time ratio that depends mainly on the reference voltage and clock stability. The counter is purposefully enabled only during the de-integration interval, as this is the only phase where the measured time is dependent on the input voltage. This architecture rejects line frequencies (50/60 Hz) very effectively when T1 is selected as an integer multiple of the interference period.</p>
                 
-                <div class="centered-image">
-                    <img src=".\images\Screenshot 2025-12-22 102628.png" alt="ADC Comparison">
+                <p>In conclusion, the dual-slope ADC's ability to provide high linearity, excellent noise rejection ratio, and long-term stability is based on its core mechanism of converting voltage into time while integrating it in a controlled process followed by digitizing this time using an accurate clock cycle.</p>
+
+                <div class="adv-disadv-section">
+                    <h3>Advantages of Dual-Slope ADC:</h3>
+                    <ul>
+                        <li>High accuracy and excellent linearity</li>
+                        <li>Excellent noise rejection (50/60 Hz power-line interference)</li>
+                        <li>Insensitive to component tolerances</li>
+                        <li>Good long-term stability</li>
+                        <li>Low offset and drift errors</li>
+                        <li>Component values cancel out in conversion equation</li>
+                    </ul>
                 </div>
-                <!--Theory of experiment -->
-                </p>
+
+                <div class="adv-disadv-section disadvantages">
+                    <h3>Disadvantages of Dual-Slope ADC:</h3>
+                    <ul>
+                        <li>Slow conversion speed (two integration phases required)</li>
+                        <li>Unsuitable for rapidly varying input signals</li>
+                        <li>Limited bandwidth</li>
+                        <li>More complex control logic compared to single-slope ADCs</li>
+                        <li>Restricted to low-frequency or DC measurements</li>
+                    </ul>
+                </div>
+
+                <div class="adv-disadv-section">
+                    <h3>Applications of Dual-Slope ADC:</h3>
+                    <ul>
+                        <li>Digital multimeters (DMMs) for accurate DC measurements</li>
+                        <li>Precision instrumentation</li>
+                        <li>Industrial measurement systems in noisy environments</li>
+                        <li>Laboratory and metrology equipment</li>
+                        <li>Sensor signal conditioning for slowly varying signals</li>
+                    </ul>
+                </div>
+
+                <h1>Comparison of ADC Types</h1>
+                
+                
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Single Slope ADC</th>
+                            <th>Dual Slope ADC</th>
+                            <th>SAR ADC</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Conversion Speed</strong></td>
+                            <td>Slow (Variable)</td>
+                            <td>Very Slow (Fixed 2-phase)</td>
+                            <td>Medium (Fixed N cycles)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Accuracy</strong></td>
+                            <td>Low to Medium</td>
+                            <td>Very High</td>
+                            <td>High</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Noise Immunity</strong></td>
+                            <td>Poor</td>
+                            <td>Excellent</td>
+                            <td>Good</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Complexity</strong></td>
+                            <td>Simple</td>
+                            <td>Moderate</td>
+                            <td>Moderate</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cost</strong></td>
+                            <td>Low</td>
+                            <td>Medium</td>
+                            <td>Medium to High</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Power Consumption</strong></td>
+                            <td>Low</td>
+                            <td>Medium</td>
+                            <td>Low to Medium</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Typical Applications</strong></td>
+                            <td>Educational, Simple measurements</td>
+                            <td>DMMs, Precision instruments</td>
+                            <td>Microcontrollers, Data acquisition</td>
+                        </tr>
+                    </tbody>
+                </table>
             </section>
-            <!-- /.content -->
         </div>
+        
         <footer class="main-footer">
-            <h4 align="center">Lab contributed by <!-- Institute Name --> </h4>
+            <h4 align="center">ADC Circuit Simulators Virtual Lab</h4>
         </footer>
     </div>
 
 </body>
 
 </html>
-<script>
-    function theory() {
-        document.getElementById("theory").style.backgroundColor = "#009dff";
-    }
-</script>
 <!-- ./wrapper -->
 <!-- jQuery 2.2.3 -->
 <script src="../../plugins/jQuery/jquery-2.2.3.min.js"></script>
