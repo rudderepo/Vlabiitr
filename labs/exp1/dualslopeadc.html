@@ -10,9 +10,97 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <style>
-        /* Disable text selection and pointer events */
+        /* Instruction Panel Styles */
+        .instrucButton {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .instrucButton:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.1);
+        }
+        
+        /* Floating Instructions Panel */
+        .floating-instructions {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 700px;
+            height: 700px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            overflow: hidden;
+            display: none;
+            pointer-events: auto;
+        }
+        
+        .floating-instructions-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .floating-instructions-body {
+            padding: 20px;
+            height: calc(700px - 60px);
+            overflow-y: auto;
+            font-size: 14px;
+        }
+        
+        .close-instructions {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+        
+        .close-instructions:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .instructions-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+            pointer-events: auto;
+        }
+        
+        /* Rest of your existing CSS... */
         * {
             user-select: none !important;
             cursor: default !important;
@@ -38,7 +126,6 @@
             min-width: 1400px;
         }
 
-        /* Re-enable pointer events for interactive elements */
         button,
         input,
         .form-range,
@@ -58,7 +145,6 @@
             cursor: pointer !important;
         }
 
-        /* Fixed layout */
         .iframecontainer {
             display: flex;
             gap: 20px;
@@ -69,7 +155,6 @@
             flex-shrink: 0;
         }
 
-        /* Circuit Simulator Container */
         .circuit-simulator-container {
             width: 980px;
             height: 720px;
@@ -82,7 +167,6 @@
             flex-shrink: 0;
         }
 
-        /* Sidebar Card */
         .sidebar-card {
             width: 400px;
             flex-shrink: 0;
@@ -98,7 +182,6 @@
             padding: 15px;
         }
 
-        /* Header Section */
         .header-section {
             background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
             color: white;
@@ -109,7 +192,6 @@
             min-width: 100%;
         }
 
-        /* Circuit Styles */
         .circuit-container {
             width: 100%;
             height: 100%;
@@ -171,7 +253,6 @@
             z-index: 10;
         }
 
-        /* Grid Positions */
         .div1 { grid-area: 1 / 1 / 2 / 2; }
         .div2 { grid-area: 3 / 1 / 4 / 2; }
         .div3 { grid-area: 2 / 3 / 5 / 5; }
@@ -184,7 +265,6 @@
         .div10 { grid-area: 6 / 10 / 9 / 12; }
         .div11 { grid-area: 7 / 3 / 9 / 5; }
 
-        /* Control Buttons */
         .control-buttons {
             display: flex;
             justify-content: space-around;
@@ -218,7 +298,6 @@
         .auto-btn:hover { background: #388E3C; }
         .check-btn:hover { background: #1976D2; }
 
-        /* Hide jsPlumb endpoints */
         .jtk-endpoint {
             display: none !important;
             opacity: 0 !important;
@@ -226,7 +305,6 @@
             pointer-events: none !important;
         }
 
-        /* Temporary line */
         #tempLine {
             position: fixed;
             top: 0;
@@ -242,7 +320,6 @@
             stroke-width: 3;
         }
 
-        /* Connection Status */
         .connection-status {
             background-color: #f8f9fa;
             border-left: 4px solid #6c757d;
@@ -263,18 +340,6 @@
             background-color: #f8d7da;
         }
 
-        /* Instructions Button */
-        .instrucButton {
-            background-color: transparent;
-            color: white;
-            border: none;
-        }
-
-        .instrucButton:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-        }
-
-        /* Output Cards */
         .output-value {
             font-family: 'Courier New', monospace;
             font-weight: bold;
@@ -285,7 +350,6 @@
         .status-converting { color: #ffc107; }
         .status-complete { color: #198754; }
 
-        /* Canvas */
         #adcCanvas {
             width: 100%;
             height: 400px;
@@ -295,7 +359,6 @@
             min-width: 100%;
         }
 
-        /* Legend */
         .legend-item {
             display: flex;
             align-items: center;
@@ -312,7 +375,6 @@
         .legend-ramp { background-color: #0d6efd; }
         .legend-deintegrate { background-color: #dc3545; }
         
-        /* Integration Parameters Card */
         .integration-params {
             background: #e7f3ff;
             border-left: 4px solid #2196F3;
@@ -337,7 +399,6 @@
             color: #2196F3;
         }
         
-        /* Dual slope specific */
         .phase-indicator {
             display: inline-block;
             width: 10px;
@@ -357,6 +418,61 @@
 </head>
 
 <body oncontextmenu="return false;">
+    <!-- Floating Instructions Overlay -->
+    <div class="instructions-overlay" id="instructionsOverlay"></div>
+    
+    <!-- Floating Instructions Panel -->
+    <div class="floating-instructions" id="floatingInstructions">
+        <div class="floating-instructions-header">
+            <h5 class="mb-0"><i class="bi bi-book me-2"></i> Dual Slope ADC Instructions</h5>
+            <button class="close-instructions" id="closeInstructions">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div class="floating-instructions-body">
+            <p>
+                This simulator demonstrates the working principle of a
+                <strong>Dual Slope Analog-to-Digital Converter</strong>
+                which uses two-phase integration for high-accuracy conversion.
+            </p>
+
+            <h6 class="mt-3"><strong>Workflow (Follow Strictly)</strong></h6>
+            <ol>
+                <li>Make circuit connections (12 connections required)</li>
+                <li>Check connections using "Check Connections" button</li>
+                <li>Set ADC parameters (Bits, Vref, Input Voltage)</li>
+                <li>Click "Run Simulation" to see dual slope conversion</li>
+                <li>Observe the two-phase integration process</li>
+                <li>Monitor counter value during deintegration phase</li>
+                <li>Reset if required</li>
+            </ol>
+
+            
+            <h6 class="mt-3"><strong>Parameter Setup</strong></h6>
+            <ul>
+                <li><strong>Number of Bits:</strong> Select resolution (1 to 16-bit)</li>
+                <li><strong>Reference Voltage (Vref):</strong> Set reference voltage (1-24V)</li>
+                <li><strong>Input Voltage:</strong> Adjust analog input using slider (0 to Vref)</li>
+                <li><strong>T1 Time:</strong> Fixed at 20ms integration time</li>
+                <li><strong>T2 Time:</strong> Automatically calculated: T2 = (Vin × T1) / Vref</li>
+            </ul>
+
+            
+
+            <div class="alert alert-warning p-2 mt-3 mb-0">
+                <strong>Note:</strong> Simulation remains locked until all 12 connections are correctly made.
+            </div>
+            
+            <div class="alert alert-info p-2 mt-3 mb-0">
+                <strong>Tip:</strong> Use "Auto-Connect" button to quickly set up all required connections.
+            </div>
+            
+            <div class="alert alert-success p-2 mt-3 mb-0">
+                <strong>Key Advantage:</strong> Dual Slope ADC offers excellent noise rejection and accuracy, but is slower than SAR ADC.
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <!-- Header -->
         <div class="header-section">
@@ -451,13 +567,13 @@
                     <!-- Control Buttons -->
                     <div class="control-buttons">
                         <button class="control-btn check-btn" id="checkBtn">
-                            Check Connections
+                            <i class="fas fa-check-circle"></i> Check Connections
                         </button>
                         <button class="control-btn auto-btn" id="autoBtn">
-                            Auto-Connect
+                            <i class="fas fa-bolt"></i> Auto-Connect
                         </button>
                         <button class="control-btn reset-btn" id="resetBtn">
-                            Clear Connections
+                            <i class="fas fa-trash-alt"></i> Clear Connections
                         </button>
                     </div>
                 </div>
@@ -470,18 +586,18 @@
 
             <!-- Sidebar Card -->
             <div class="card sidebar-card" style="width: 377px;">
-                <div class="card-header" style="display: flex; justify-content: space-between;">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                     <div>ADC Parameters</div>
                     <div>
                         <button class="instrucButton" title="Show Instructions">
-                            
+                            <i class="bi bi-info-circle"></i>
                         </button>
                     </div>
                 </div>
                 <div class="card-body">
                     <!-- Connection Status -->
                     <div id="connectionStatus" class="connection-status">
-                        
+                        <i class="bi bi-info-circle"></i>
                         <span id="connectionStatusText">All connections must be correct before running simulation</span>
                     </div>
 
@@ -526,11 +642,11 @@
 
                     <br><br>
                     <div class="btn-group-responsive">
-                        <button id="startBtn" class="btn btn-success mb-2">
-                              Run Simulation
+                        <button id="startBtn" class="btn btn-success mb-2" disabled>
+                            <i class="fas fa-play-circle"></i> Run Simulation
                         </button>
                         <button id="globalResetBtn" class="btn btn-danger mb-2">
-                             Reset All
+                            <i class="fas fa-redo"></i> Reset All
                         </button>
                     </div>
                 </div>
@@ -542,7 +658,7 @@
             <!-- Conversion Visualization Card -->
             <div class="card conversion-card">
                 <div class="card-header">
-                     Dual Slope ADC Graph
+                    <i class="bi bi-graph-up"></i> Dual Slope ADC Graph
                 </div>
                 <div class="card-body">
                     <div class="position-relative">
@@ -605,7 +721,7 @@
             <!-- Digital Output Card -->
             <div class="card digital-output-card">
                 <div class="card-header">
-                    Digital Output
+                    <i class="bi bi-code-slash"></i> Digital Output
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -679,6 +795,42 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        // Instructions Panel Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const instrucButton = document.querySelector('.instrucButton');
+            const floatingInstructions = document.getElementById('floatingInstructions');
+            const instructionsOverlay = document.getElementById('instructionsOverlay');
+            const closeInstructions = document.getElementById('closeInstructions');
+            
+            function toggleInstructions() {
+                if (floatingInstructions.style.display === 'block') {
+                    floatingInstructions.style.display = 'none';
+                    instructionsOverlay.style.display = 'none';
+                } else {
+                    floatingInstructions.style.display = 'block';
+                    instructionsOverlay.style.display = 'block';
+                }
+            }
+            
+            if (instrucButton) {
+                instrucButton.addEventListener('click', toggleInstructions);
+            }
+            
+            if (closeInstructions) {
+                closeInstructions.addEventListener('click', toggleInstructions);
+            }
+            
+            if (instructionsOverlay) {
+                instructionsOverlay.addEventListener('click', toggleInstructions);
+            }
+            
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && floatingInstructions.style.display === 'block') {
+                    toggleInstructions();
+                }
+            });
+        });
+
         // Global variables
         let areConnectionsCorrect = false;
         let isSimulationRunning = false;
@@ -822,12 +974,12 @@
 
             if (isCorrect) {
                 connectionStatus.className = 'connection-status connected';
-                connectionStatusText.innerHTML = ` ${message || "All connections are correct! Simulation ready."}`;
+                connectionStatusText.innerHTML = `<i class="bi bi-check-circle-fill"></i> ${message || "All connections are correct! Simulation ready."}`;
                 
                 // Enable start button
                 startBtn.disabled = false;
                 startBtn.className = 'btn btn-success mb-2';
-                startBtn.innerHTML = 'Run Simulation';
+                startBtn.innerHTML = '<i class="fas fa-play-circle"></i> Run Simulation';
                 
                 // Show success alert
                 Swal.fire({
@@ -839,7 +991,7 @@
                 });
             } else {
                 connectionStatus.className = 'connection-status disconnected';
-                connectionStatusText.innerHTML = ` ${message || "All connections must be correct before running simulation"}`;
+                connectionStatusText.innerHTML = `<i class="bi bi-exclamation-circle-fill"></i> ${message || "All connections must be correct before running simulation"}`;
                 
                 // Disable start button
                 startBtn.disabled = true;
@@ -872,7 +1024,7 @@
             if (areConnectionsCorrect) {
                 startBtn.disabled = false;
                 startBtn.className = 'btn btn-success mb-2';
-                startBtn.innerHTML = 'Run Simulation';
+                startBtn.innerHTML = '<i class="fas fa-play-circle"></i> Run Simulation';
             }
         }
 
@@ -895,7 +1047,7 @@
             simulationStartTime = Date.now();
             
             startBtn.disabled = true;
-            startBtn.innerHTML = 'Integrating...';
+            startBtn.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Integrating...';
             
             statusDisplay.textContent = 'Integrating (T1)';
             statusDisplay.className = 'h4 status-converting';
@@ -925,7 +1077,7 @@
                     // Switch to deintegration phase
                     currentPhase = 'deintegrating';
                     simulationStartTime = Date.now();
-                    startBtn.innerHTML = 'Deintegrating...';
+                    startBtn.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Deintegrating...';
                     statusDisplay.textContent = 'Deintegrating (T2)';
                 }
             } else if (currentPhase === 'deintegrating') {
@@ -955,7 +1107,7 @@
                     digitalOutput = Math.floor((inputVoltage / VREF) * MAX_COUNT);
                     
                     startBtn.disabled = false;
-                    startBtn.innerHTML = 'Run Again';
+                    startBtn.innerHTML = '<i class="fas fa-redo"></i> Run Again';
                     
                     statusDisplay.textContent = 'Complete';
                     statusDisplay.className = 'h4 status-complete';
@@ -1046,18 +1198,6 @@
             ctx.lineTo(padding, height - padding);
             ctx.lineTo(width - padding, height - padding);
             ctx.stroke();
-
-            // Draw Y-axis labels (Voltage)
-            // ctx.fillStyle = '#6c757d';
-            // ctx.font = '12px Arial';
-            // ctx.textAlign = 'right';
-
-            // const ySteps = 5;
-            // for (let i = 0; i <= ySteps; i++) {
-            //     const voltage = (i / ySteps) * VREF;
-            //     const y = height - padding - (i / ySteps) * graphHeight;
-            //     ctx.fillText(voltage.toFixed(1) + 'V', padding - 10, y + 4);
-            // }
 
             // Draw X-axis labels (Time)
             ctx.textAlign = 'center';

@@ -4,20 +4,103 @@
 <head>
     <meta charset="UTF-8">
     <title>SAR ADC Workspace</title>
-
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
-
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- jsPlumb -->
     <script src="https://unpkg.com/jsplumb@2.15.6/dist/js/jsplumb.min.js"></script>
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <style>
-        html,
-        body {
+        /* Add instruction panel styles inline */
+        .instrucButton {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .instrucButton:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.1);
+        }
+        
+        /* Floating Instructions Panel */
+        .floating-instructions {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 700px;
+            height: 700px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1000;
+            overflow: hidden;
+            display: none;
+            pointer-events: auto;
+        }
+        
+        .floating-instructions-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .floating-instructions-body {
+            padding: 20px;
+            height: calc(700px - 60px);
+            overflow-y: auto;
+            font-size: 14px;
+        }
+        
+        .close-instructions {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.3s;
+        }
+        
+        .close-instructions:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .instructions-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            display: none;
+            pointer-events: auto;
+        }
+        
+        /* Rest of your existing CSS... */
+        html, body {
             margin: 0;
             padding: 0;
             color: #333;
@@ -27,22 +110,17 @@
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             overflow-x: hidden;
         }
-
-        /* FIXED HEIGHT – SAME AS SINGLE-SLOPE ADC */
-        .circuit-panel,
-        .parameters-panel {
+        
+        .circuit-panel, .parameters-panel {
             height: 720px;
             display: flex;
             flex-direction: column;
         }
-
-
-        html,
-        body {
+        
+        html, body {
             min-height: 100vh;
         }
-
-        /* FLEX CONTAINER */
+        
         .flex-container {
             display: flex;
             width: 1400px;
@@ -54,8 +132,7 @@
             border-radius: 12px;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
         }
-
-        /* CIRCUIT WORKSPACE - 70% */
+        
         .circuit-panel {
             width: 980px;
             min-width: 980px;
@@ -64,7 +141,7 @@
             display: flex;
             flex-direction: column;
         }
-
+        
         .canvas-wrapper {
             width: 980px;
             min-width: 980px;
@@ -77,8 +154,7 @@
             overflow: hidden;
             border-radius: 10px;
         }
-
-        /* GRID WORKSPACE */
+        
         .parent {
             width: 100%;
             height: 100%;
@@ -87,14 +163,12 @@
             grid-template-columns: repeat(12, 1fr);
             grid-template-rows: repeat(9, 1fr);
             gap: 10px;
-            background-image:
-                linear-gradient(to right, rgba(108, 117, 125, 0.15) 1px, transparent 1px),
+            background-image: linear-gradient(to right, rgba(108, 117, 125, 0.15) 1px, transparent 1px),
                 linear-gradient(to bottom, rgba(108, 117, 125, 0.15) 1px, transparent 1px);
             background-size: 25px 25px;
             position: relative;
         }
-
-        /* COMPONENT BLOCK */
+        
         .parent>div {
             background: white;
             border: 2px solid #adb5bd;
@@ -110,14 +184,13 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
         }
-
+        
         .parent>div:hover {
             border-color: #0d6efd;
             box-shadow: 0 6px 12px rgba(13, 110, 253, 0.15);
             transform: translateY(-2px);
         }
-
-        /* COMPONENT IMAGE */
+        
         .parent img {
             max-width: 120px;
             max-height: 120px;
@@ -125,8 +198,7 @@
             mix-blend-mode: multiply;
             filter: brightness(1.05) contrast(1.1);
         }
-
-        /* CONNECTION DOT */
+        
         .dot {
             width: 14px;
             height: 14px;
@@ -139,69 +211,65 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
         }
-
+        
         .dot:hover {
             transform: scale(1.2);
             box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
         }
-
+        
         .dot.connected {
             background: linear-gradient(135deg, #198754 0%, #157347 100%);
         }
-
+        
         .dot.connected:hover {
             box-shadow: 0 4px 8px rgba(25, 135, 84, 0.3);
         }
-
-        /* HIDE JSPLUMB ENDPOINTS COMPLETELY */
+        
         .jtk-endpoint {
             display: none !important;
             opacity: 0 !important;
             visibility: hidden !important;
             pointer-events: none !important;
         }
-
-        /* Connection line styling */
+        
         .jtk-connector {
             stroke: #0d6efd;
             stroke-width: 3;
         }
-
+        
         .jtk-connector:hover {
             stroke: #0a58ca;
             stroke-width: 4;
         }
-
-        /* GRID POSITIONS */
+        
         .div1 {
             grid-area: 2 / 2 / 3 / 3;
         }
-
+        
         .div2 {
             grid-area: 2 / 4 / 3 / 5;
         }
-
+        
         .div3 {
             grid-area: 2 / 6 / 5 / 8;
         }
-
+        
         .div4 {
             grid-area: 2 / 9 / 4 / 11;
         }
-
+        
         .div5 {
             grid-area: 5 / 9 / 7 / 12;
         }
-
+        
         .div6 {
             grid-area: 6 / 4 / 8 / 8;
         }
-
+        
         .div7 {
             grid-area: 8 / 2 / 9 / 3;
         }
-
-        /* HEADER SECTION */
+        
         .header-section {
             background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
             color: white;
@@ -211,8 +279,7 @@
             text-align: center;
             box-shadow: 0 4px 6px rgba(13, 110, 253, 0.3);
         }
-
-        /* TITLE BAR */
+        
         .workspace-title {
             position: absolute;
             top: 10px;
@@ -227,7 +294,7 @@
             font-weight: 600;
             letter-spacing: 0.5px;
         }
-
+        
         .control-buttons {
             width: 70%;
             display: flex;
@@ -244,7 +311,7 @@
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
             border: 1px solid #dee2e6;
         }
-
+        
         .control-btn {
             border: none;
             padding: 10px 20px;
@@ -259,41 +326,40 @@
             min-width: 140px;
             justify-content: center;
         }
-
+        
         .reset-btn {
             background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
             color: white;
         }
-
+        
         .reset-btn:hover {
             background: linear-gradient(135deg, #c82333 0%, #b21f2d 100%);
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
         }
-
+        
         .auto-btn {
             background: linear-gradient(135deg, #20c997 0%, #198754 100%);
             color: white;
         }
-
+        
         .auto-btn:hover {
             background: linear-gradient(135deg, #198754 0%, #157347 100%);
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(25, 135, 84, 0.3);
         }
-
+        
         .check-btn {
             background: linear-gradient(135deg, #0dcaf0 0%, #0d6efd 100%);
             color: white;
         }
-
+        
         .check-btn:hover {
             background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(13, 110, 253, 0.3);
         }
-
-        /* PARAMETERS PANEL - 30% */
+        
         .parameters-panel {
             width: 400px;
             min-width: 400px;
@@ -302,44 +368,21 @@
             display: flex;
             flex-direction: column;
         }
-
-        /* .parameters-card {
-            width: 400px;
-            min-width: 400px;
-            max-width: 400px;
-            
-            display: flex;
-            flex-direction: column;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            border: 1px solid #dee2e6;
-        } */
+        
         .parameters-card {
             flex: 1;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
-
-        /* .card-body {
-            flex: 1;
-            height: 100%;
-            overflow-y: auto;
-            padding: 25px;
-            background: white;
-        } */
+        
         .card-body {
             flex: 1;
             overflow-y: auto;
             padding: 20px;
             min-height: 0;
-            /* CRITICAL for flex scrolling */
         }
-
-
-        /* SIMULATION VISUALIZATION */
+        
         .simulation-container {
             width: 1400px;
             min-width: 1400px;
@@ -352,25 +395,23 @@
             display: none;
             border: 1px solid #dee2e6;
         }
-
+        
         .simulation-container.active {
             display: block;
             animation: fadeIn 0.5s ease;
         }
-
+        
         @keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(10px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-
-        /* SIMULATION HEADER */
+        
         .simulation-header {
             background: linear-gradient(135deg, #6f42c1 0%, #0d6efd 100%);
             color: white;
@@ -380,8 +421,7 @@
             text-align: center;
             box-shadow: 0 4px 6px rgba(111, 66, 193, 0.3);
         }
-
-        /* BINARY DISPLAY */
+        
         .binary-display {
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             border: 2px solid #dee2e6;
@@ -390,7 +430,7 @@
             margin-bottom: 20px;
             text-align: center;
         }
-
+        
         .binary-output-display {
             font-size: 2.8rem;
             font-weight: bold;
@@ -405,7 +445,7 @@
             color: #2c3e50;
             box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
         }
-
+        
         .bits-container {
             display: flex;
             justify-content: center;
@@ -413,7 +453,7 @@
             margin: 20px 0;
             flex-wrap: wrap;
         }
-
+        
         .bit-box {
             width: 60px;
             height: 60px;
@@ -429,30 +469,29 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-
+        
         .bit-index {
             font-size: 11px;
             margin-top: 4px;
             opacity: 0.9;
         }
-
+        
         .bit-box.active {
             background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
             transform: scale(1.15);
             box-shadow: 0 6px 12px rgba(13, 110, 253, 0.4);
         }
-
+        
         .bit-box.set {
             background: linear-gradient(135deg, #198754 0%, #157347 100%);
             box-shadow: 0 4px 8px rgba(25, 135, 84, 0.3);
         }
-
+        
         .bit-box.cleared {
             background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
             box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
         }
-
-        /* STEP DISPLAY */
+        
         .step-display {
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             border-radius: 10px;
@@ -462,7 +501,7 @@
             overflow-y: auto;
             border: 1px solid #dee2e6;
         }
-
+        
         .step-item {
             background: white;
             padding: 15px;
@@ -473,30 +512,29 @@
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
         }
-
+        
         .step-item:hover {
             transform: translateX(5px);
             box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
         }
-
+        
         .step-item.active {
             border-left-color: #0d6efd;
             background: linear-gradient(135deg, #e7f3ff 0%, #d4e6ff 100%);
         }
-
+        
         .step-item.completed {
             border-left-color: #198754;
             background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
         }
-
-        /* VISUALIZATION METRICS */
+        
         .metrics-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             margin-bottom: 25px;
         }
-
+        
         .metric-box {
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             border: 2px solid #dee2e6;
@@ -505,13 +543,13 @@
             text-align: center;
             transition: all 0.3s ease;
         }
-
+        
         .metric-box:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
             border-color: #0d6efd;
         }
-
+        
         .metric-value {
             font-size: 28px;
             font-weight: bold;
@@ -519,7 +557,7 @@
             margin: 10px 0;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
         }
-
+        
         .metric-label {
             font-size: 13px;
             color: #6c757d;
@@ -527,8 +565,7 @@
             letter-spacing: 1px;
             font-weight: 600;
         }
-
-        /* SIMULATION CONTROLS */
+        
         .simulation-controls {
             display: flex;
             gap: 12px;
@@ -539,7 +576,7 @@
             border-radius: 10px;
             border: 1px solid #dee2e6;
         }
-
+        
         .simulation-btn {
             padding: 12px 24px;
             border: none;
@@ -553,19 +590,18 @@
             min-width: 160px;
             justify-content: center;
         }
-
+        
         .simulation-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none !important;
         }
-
+        
         .simulation-btn:not(:disabled):hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
-
-        /* Connection Status */
+        
         .connection-status {
             background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
             border-left: 5px solid #ffc107;
@@ -577,20 +613,19 @@
             color: #856404;
             box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
         }
-
+        
         .connection-status.connected {
             background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
             border-left-color: #198754;
             color: #155724;
         }
-
+        
         .connection-status.disconnected {
             background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
             border-left-color: #dc3545;
             color: #721c24;
         }
-
-        /* TEMPORARY LINE FOR DRAGGING */
+        
         #tempLine {
             position: fixed;
             top: 0;
@@ -600,44 +635,40 @@
             pointer-events: none;
             z-index: 5;
         }
-
+        
         #tempLine line {
             stroke: #0d6efd;
             stroke-width: 3;
             stroke-dasharray: 5, 5;
             animation: dash 1s linear infinite;
         }
-
+        
         @keyframes dash {
             to {
                 stroke-dashoffset: 20;
             }
         }
-
-        /* Form Controls */
-        .form-control,
-        .form-select,
-        .form-range {
+        
+        .form-control, .form-select, .form-range {
             border-radius: 8px;
             border: 2px solid #ced4da;
             font-size: 14px;
             padding: 10px 15px;
             transition: all 0.3s ease;
         }
-
-        .form-control:focus,
-        .form-select:focus {
+        
+        .form-control:focus, .form-select:focus {
             border-color: #0d6efd;
             box-shadow: 0 0 0 0.3rem rgba(13, 110, 253, 0.25);
         }
-
+        
         .form-label {
             font-weight: 600;
             margin-bottom: 10px;
             font-size: 14px;
             color: #495057;
         }
-
+        
         .form-range::-webkit-slider-thumb {
             background: #0d6efd;
             width: 20px;
@@ -645,15 +676,14 @@
             border-radius: 50%;
             cursor: pointer;
         }
-
-        /* Buttons in parameters panel */
+        
         .btn-group-responsive {
             display: flex;
             flex-direction: column;
             gap: 12px;
             margin-top: 25px;
         }
-
+        
         .btn-group-responsive .btn {
             padding: 12px;
             font-size: 15px;
@@ -665,77 +695,68 @@
             justify-content: center;
             gap: 10px;
         }
-
+        
         .btn-group-responsive .btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 1200px) {
-            .flex-container {
-                flex-direction: column;
-                height: auto;
-                width: 95%;
-                min-width: 95%;
-            }
-
-            .circuit-panel,
-            .parameters-panel {
-                width: 100%;
-                min-width: 100%;
-                max-width: 100%;
-            }
-
-            .simulation-container {
-                width: 95%;
-                min-width: 95%;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .flex-container {
-                padding: 10px;
-                margin: 10px auto;
-            }
-
-            .circuit-panel,
-            .parameters-panel {
-                height: auto;
-            }
-
-            .canvas-wrapper {
-                height: 500px;
-            }
-
-            .control-buttons {
-                flex-direction: column;
-                width: 90%;
-                bottom: 10px;
-            }
-
-            .control-btn {
-                min-width: auto;
-                width: 100%;
-            }
-
-            .metrics-container {
-                grid-template-columns: 1fr;
-            }
-
-            .simulation-controls {
-                flex-direction: column;
-            }
-
-            .simulation-btn {
-                min-width: auto;
-                width: 100%;
-            }
         }
     </style>
 </head>
 
 <body>
+    <!-- Floating Instructions Overlay -->
+    <div class="instructions-overlay" id="instructionsOverlay"></div>
+    
+    <!-- Floating Instructions Panel -->
+    <div class="floating-instructions" id="floatingInstructions">
+        <div class="floating-instructions-header">
+            <h5 class="mb-0"><i class="bi bi-book me-2"></i> SAR ADC Instructions</h5>
+            <button class="close-instructions" id="closeInstructions">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div class="floating-instructions-body">
+            <p>
+                This simulator demonstrates the working principle of a
+                <strong>Successive Approximation Register (SAR) Analog-to-Digital Converter</strong>
+                which uses binary search algorithm to convert analog signals to digital.
+            </p>
+
+            <h6 class="mt-3"><strong>Workflow (Follow Strictly)</strong></h6>
+            <ol>
+                <li>Make circuit connections (7 connections required)</li>
+                <li>Check connections using "Check Connections" button</li>
+                <li>Set ADC parameters (Bits, Vref, Input Voltage, Step Speed)</li>
+                <li>Click "Start Simulation"</li>
+                <li>Use Next Step, Previous Step, or Auto Run to see conversion process</li>
+                <li>Observe binary output and step-by-step comparison</li>
+                <li>Reset if required</li>
+            </ol>
+
+            <h6 class="mt-3"><strong>Parameter Setup</strong></h6>
+            <ul>
+                <li><strong>Number of Bits:</strong> Select resolution (4-bit to 16-bit)</li>
+                <li><strong>Reference Voltage (Vref):</strong> Set reference voltage (1-24V)</li>
+                <li><strong>Step Speed:</strong> Control simulation speed (Fast to Very Slow)</li>
+                <li><strong>Input Voltage:</strong> Adjust analog input using slider (0 to Vref)</li>
+            </ul>
+
+    
+
+            <div class="alert alert-warning p-2 mt-3 mb-0">
+                <strong>Note:</strong> Simulation remains locked until all 7 connections are correctly made.
+            </div>
+            
+            <div class="alert alert-info p-2 mt-3 mb-0">
+                <strong>Tip:</strong> Use "Auto-Connect" button to quickly set up all required connections.
+            </div>
+            
+            <div class="alert alert-success p-2 mt-3 mb-0">
+                <strong>Key Concept:</strong> SAR ADC is faster than Single Slope but requires precise DAC and comparator.
+            </div>
+        </div>
+    </div>
+
     <div class="col-11 header-section" style="margin-left:70px; margin-top: 10px;">
         <h5>SAR ADC Circuit Workspace</h5>
     </div>
@@ -797,13 +818,13 @@
                 <!-- CONTROL BUTTONS -->
                 <div class="control-buttons">
                     <button class="control-btn reset-btn" id="resetBtn">
-                        Clear All
+                        <i class="fas fa-trash-alt"></i> Clear All
                     </button>
                     <button class="control-btn auto-btn" id="autoBtn">
-                        Auto-Connect
+                        <i class="fas fa-bolt"></i> Auto-Connect
                     </button>
                     <button class="control-btn check-btn" id="checkBtn">
-                        Check Connections
+                        <i class="fas fa-check-circle"></i> Check Connections
                     </button>
                 </div>
             </div>
@@ -811,15 +832,17 @@
 
         <!-- PARAMETERS PANEL (30%) -->
         <div class="parameters-panel">
-            <div class="header-section" style="width: 360px;">
-                <h5>Simulation Parameters</h5>
+            <div class="header-section" style="width: 360px; display: flex; justify-content: space-between; align-items: center;">
+                <h5 style="margin: 0;">Simulation Parameters</h5>
+                <button class="instrucButton" title="Show Instructions">
+                    <i class="bi bi-info-circle"></i>
+                </button>
             </div>
 
             <div class="parameters-card" style="width: 360px;">
                 <div class="card-body" style="width: 360px;">
                     <!-- Connection Status -->
                     <div id="connectionStatus" class="connection-status">
-
                         <span id="connectionStatusText">Connect the circuit components to begin</span>
                     </div>
 
@@ -869,10 +892,10 @@
 
                     <div class="btn-group-responsive">
                         <button id="startSimulation" class="btn btn-primary" disabled>
-                            Start Simulation
+                            <i class="fas fa-play-circle"></i> Start Simulation
                         </button>
                         <button id="resetParamsBtn" class="btn btn-danger">
-                            Reset Parameters
+                            <i class="fas fa-redo"></i> Reset Parameters
                         </button>
                     </div>
                 </div>
@@ -924,16 +947,16 @@
 
         <div class="simulation-controls">
             <button id="prevStepBtn" class="simulation-btn btn btn-secondary" disabled>
-                Previous Step
+                <i class="fas fa-step-backward"></i> Previous Step
             </button>
             <button id="nextStepBtn" class="simulation-btn btn btn-success">
-                Next Step
+                <i class="fas fa-step-forward"></i> Next Step
             </button>
             <button id="autoRunBtn" class="simulation-btn btn btn-primary">
-                Auto Run
+                <i class="fas fa-play"></i> Auto Run
             </button>
             <button id="resetSimBtn" class="simulation-btn btn btn-danger">
-                Reset
+                <i class="fas fa-stop"></i> Reset
             </button>
         </div>
     </div>
@@ -944,6 +967,46 @@
     </svg>
 
     <script>
+        // Instructions Panel Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get elements
+            const instrucButton = document.querySelector('.instrucButton');
+            const floatingInstructions = document.getElementById('floatingInstructions');
+            const instructionsOverlay = document.getElementById('instructionsOverlay');
+            const closeInstructions = document.getElementById('closeInstructions');
+            
+            // Toggle instructions panel
+            function toggleInstructions() {
+                if (floatingInstructions.style.display === 'block') {
+                    floatingInstructions.style.display = 'none';
+                    instructionsOverlay.style.display = 'none';
+                } else {
+                    floatingInstructions.style.display = 'block';
+                    instructionsOverlay.style.display = 'block';
+                }
+            }
+            
+            // Event listeners
+            if (instrucButton) {
+                instrucButton.addEventListener('click', toggleInstructions);
+            }
+            
+            if (closeInstructions) {
+                closeInstructions.addEventListener('click', toggleInstructions);
+            }
+            
+            if (instructionsOverlay) {
+                instructionsOverlay.addEventListener('click', toggleInstructions);
+            }
+            
+            // Close with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && floatingInstructions.style.display === 'block') {
+                    toggleInstructions();
+                }
+            });
+        });
+
         jsPlumb.ready(function () {
             const instance = jsPlumb.getInstance({
                 Container: "workspace",
@@ -1089,11 +1152,11 @@
                 autoRunBtn.disabled = currentStep >= totalSteps;
 
                 if (isAutoRunning) {
-                    autoRunBtn.innerHTML = 'Pause';
+                    autoRunBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
                     autoRunBtn.classList.remove('btn-primary');
                     autoRunBtn.classList.add('btn-warning');
                 } else {
-                    autoRunBtn.innerHTML = 'Auto Run';
+                    autoRunBtn.innerHTML = '<i class="fas fa-play"></i> Auto Run';
                     autoRunBtn.classList.remove('btn-warning');
                     autoRunBtn.classList.add('btn-primary');
                 }
@@ -1232,7 +1295,6 @@
                 Swal.fire({
                     title: 'Conversion Complete!',
                     html: `<div class="text-center">
-        
                              <h4 class="mt-3">SAR ADC Conversion Successful!</h4>
                            </div>
                            <div class="text-start mt-3">
@@ -1323,17 +1385,17 @@
 
                 if (correct === requiredConnections.length && userConnections.length === requiredConnections.length) {
                     statusDiv.className = 'connection-status connected';
-                    statusText.innerHTML = `All ${correct} connections correct! Ready to simulate.`;
+                    statusText.innerHTML = `<i class="fas fa-check-circle"></i> All ${correct} connections correct! Ready to simulate.`;
                     startSimulationBtn.disabled = false;
                     simulationContainer.classList.add('active');
                 } else if (correct > 0) {
                     statusDiv.className = 'connection-status';
-                    statusText.innerHTML = `${correct} of ${requiredConnections.length} connections correct.`;
+                    statusText.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${correct} of ${requiredConnections.length} connections correct.`;
                     startSimulationBtn.disabled = true;
                     simulationContainer.classList.remove('active');
                 } else {
                     statusDiv.className = 'connection-status disconnected';
-                    statusText.innerHTML = `No connections made. Connect the circuit first.`;
+                    statusText.innerHTML = `<i class="fas fa-times-circle"></i> No connections made. Connect the circuit first.`;
                     startSimulationBtn.disabled = true;
                     simulationContainer.classList.remove('active');
                 }
@@ -1456,7 +1518,7 @@
                 const btn = this;
                 const originalText = btn.innerHTML;
                 btn.disabled = true;
-                btn.innerHTML = 'Connecting...';
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting...';
 
                 instance.deleteEveryConnection();
 
@@ -1681,7 +1743,7 @@
                     Swal.fire({
                         title: 'Simulation Starting!',
                         html: `<div class="text-center">
-                                 <i class="bi bi-play-circle-fill text-primary" style="font-size: 48px;"></i>
+                                 <i class="fas fa-play-circle text-primary" style="font-size: 48px;"></i>
                                  <h4 class="mt-3">All connections verified!</h4>
                                </div>
                                <div class="text-start mt-3">
@@ -1782,5 +1844,4 @@
         });
     </script>
 </body>
-
 </html>

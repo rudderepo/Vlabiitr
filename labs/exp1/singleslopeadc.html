@@ -962,31 +962,11 @@
                 <li><strong>Required Resistance:</strong> Calculated from max count time and capacitor value</li>
             </ul>
 
-            <h6 class="mt-3"><strong>Voltage Limitations</strong></h6>
-            <ul>
-                <li>Op-amp typically works with ±3V to ±36V supply</li>
-                <li>Vref can exceed op-amp supply voltage in some configurations</li>
-                <li>Input voltage must be less than Vref for accurate conversion</li>
-                <li>Warnings will appear if voltages exceed safe limits</li>
-            </ul>
+            
 
-            <h6 class="mt-3"><strong>Circuit Connections</strong></h6>
-            <ul>
-                <li>Use red dots to create connections (click → drag → release)</li>
-                <li>Green dot indicates a successful connection</li>
-                <li>Total required connections: <strong>11</strong></li>
-            </ul>
+           
 
-            <p class="mb-1 mt-3"><strong>Key Required Links:</strong></p>
-            <ul>
-                <li>VIN → Comparator (+)</li>
-                <li>Integrator Output → Comparator (−)</li>
-                <li>Comparator Output → Counter Reset</li>
-                <li>Clock → Counter Clock</li>
-                <li>VREF → Resistor → Integrator</li>
-                <li>Capacitor across Integrator</li>
-                <li>Counter → Buffer</li>
-            </ul>
+            
 
             <div class="alert alert-warning p-2 mt-3 mb-0">
                 <strong>Note:</strong> Simulation remains locked if any required connection is missing or incorrect.
